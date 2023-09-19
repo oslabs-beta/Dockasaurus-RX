@@ -1,4 +1,4 @@
-# DockasaursRX
+# DockasaurusRX
 
 This repository defines an example of a Docker extension. The files in this repository have been automatically generated as a result of running `docker extension init`.
 
