@@ -54,7 +54,7 @@ func listen(path string) (net.Listener, error) {
 }
 
 func hello(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, HTTPMessageBody{Message: "hello"})
+	return ctx.JSON(http.StatusOK, HTTPMessageBody{Message: "hello from justin"})
 }
 
 type HTTPMessageBody struct {
