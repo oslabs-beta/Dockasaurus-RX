@@ -24,6 +24,7 @@ export function App() {
         avoiding custom styling will help make sure your extension continues to
         look great as Docker's theme evolves.
       </Typography>
+      <Typography>Test</Typography>
       <Typography variant='body1' color='text.secondary' sx={{ mt: 2 }}>
         Click this button to test IFrame:
       </Typography>
@@ -37,9 +38,7 @@ export function App() {
           width='640px'
           height='320px'
           id=''
-          className='test'
-
-        ></iframe>
+          className='test'></iframe>
       </Stack>
     </>
   );

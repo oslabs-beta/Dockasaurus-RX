@@ -13,7 +13,7 @@
     "react-dom": "^18.2.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "tsc && vite build",
     "test": "jest src"
   },
