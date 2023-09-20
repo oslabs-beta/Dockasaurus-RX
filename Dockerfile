@@ -23,8 +23,8 @@ COPY ui /ui
 RUN npm run build
 
 FROM alpine
-LABEL org.opencontainers.image.title="DockasaursRX" \
-    org.opencontainers.image.description="Docker container resource optimization extension" \
+LABEL org.opencontainers.image.title="DockasaurusRX" \
+    org.opencontainers.image.description="Docker Resource Management Extension" \
     org.opencontainers.image.vendor="DockasaurusRX" \
     com.docker.desktop.extension.api.version="0.3.4" \
     com.docker.extension.screenshots="" \
