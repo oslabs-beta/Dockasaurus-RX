@@ -8,7 +8,7 @@
   },
   "ui": {
     "dashboard-tab": {
-      "title": "Dockasaursrx",
+      "title": "Dockasaurusrx",
       "src": "index.html",
       "root": "ui"
     }

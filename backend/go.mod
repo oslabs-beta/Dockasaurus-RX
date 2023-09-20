@@ -1,4 +1,4 @@
-module my-extension
+module DRX
 
 go 1.19
 
