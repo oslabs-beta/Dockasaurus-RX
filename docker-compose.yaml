@@ -1,3 +1,5 @@
 services:
   DRX:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    volumes:
+      - /var/run/docker.sock.raw:/var/run/docker.sock
