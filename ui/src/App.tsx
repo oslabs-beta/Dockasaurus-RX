@@ -17,6 +17,7 @@ export function App(): any {
 
   const sendMessageToTextBox = async () => {
     const result = await ddClient.extension.vm?.service?.get('/test');
+    console.log(result);
     setResponse(JSON.stringify(result));
   };
 
