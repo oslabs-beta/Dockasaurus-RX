@@ -15,9 +15,11 @@ export function App() {
   const [response, setResponse] = React.useState<string>();
   const ddClient = useDockerDesktopClient();
 
-  const fetchAndDisplayResponse = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/hello');
-    setResponse(JSON.stringify(result));
+  const sendMessageToTextBox = async () => {
+    const result = await ddClient.extension.vm?.service?.get('/test');
+
+    const responseText = await result.text();
+    setResponse(responseText);
   };
 
   return (
@@ -34,7 +36,7 @@ export function App() {
         response will appear in the textarea.
       </Typography>
       <Stack direction='row' alignItems='start' spacing={2} sx={{ mt: 4 }}>
-        <Button variant='contained' onClick={fetchAndDisplayResponse}>
+        <Button variant='contained' onClick={sendMessageToTextBox}>
           Call backend
         </Button>
 
