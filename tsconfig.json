@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "commonjs",
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
     "strict": true,
-    "outDir": "./build"
-  }
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": ["./backend/*"]
 }
