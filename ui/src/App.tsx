@@ -8,7 +8,7 @@ import { Grid, GridItem } from '@chakra-ui/react';
 import { Center } from '@chakra-ui/react';
 import { Container } from '@chakra-ui/react';
 import { Accordion, AccordionItem, AccordionIcon, AccordionButton, AccordionPanel } from '@chakra-ui/react';
-import '../../ui/css/style.css';
+// import '../../ui/css/style.css';
 
 // Note: This line relies on Docker Desktop's presence as a host application.
 // If you're running this React app in a browser, it won't work properly.
@@ -26,11 +26,6 @@ export function App(): any {
     const result = await ddClient.extension.vm?.service?.get('/test');
     console.log(result);
     setResponse(JSON.stringify(result));
-  const sendMessageToTextBox = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/test');
-
-    const responseText = await result.text();
-    setResponse(responseText);
   };
 
   return (
