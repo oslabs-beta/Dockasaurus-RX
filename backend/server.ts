@@ -19,7 +19,6 @@ async function getDockerContainers(): Promise<Container[]> {
     socketPath: '/var/run/docker.sock',
     params: { all: true },
   });
-
   const containers = response.data;
 
   return containers;
