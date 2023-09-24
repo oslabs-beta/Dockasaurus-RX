@@ -1,13 +1,19 @@
 import React from 'react';
-import { Text } from '@chakra-ui/react';
 import { createDockerDesktopClient } from '@docker/extension-api-client';
-import { Stack, HStack, VStack, StackDivider } from '@chakra-ui/react';
+import { Stack, TextField, Typography } from '@mui/material';
+import { Text } from '@chakra-ui/react';
 import { Button, ButtonGroup, Box } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Center } from '@chakra-ui/react';
 import { Container } from '@chakra-ui/react';
-import { Accordion, AccordionItem, AccordionIcon, AccordionButton, AccordionPanel } from '@chakra-ui/react';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionIcon,
+  AccordionButton,
+  AccordionPanel,
+} from '@chakra-ui/react';
 // import '../../ui/css/style.css';
 
 // Note: This line relies on Docker Desktop's presence as a host application.
@@ -23,15 +29,21 @@ export function App(): any {
   const ddClient = useDockerDesktopClient();
 
   const sendMessageToTextBox = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/test');
-    console.log(result);
-    setResponse(JSON.stringify(result));
+    try {
+      const result:Array<Object> = await ddClient.extension.vm?.service?.get('/test');
+      if (result === null)
+      // console.log(result);
+      const images = result.map((container) => container?['Image']:String);
+      setResponse(images);
+    } catch (err) {
+      throw new Error();
+    }
   };
 
   return (
     <>
-      {/* <Text fontSize='3xl'>Docker extension demo</Text>
-      <Text fontSize='sm'>
+      {/* <Typography variant='h3'>Docker extension demo</Typography>
+      <Typography variant='body1' color='text.secondary' sx={{ mt: 2 }}>
         This is a basic page rendered with MUI, using Docker's theme. Read the
         MUI documentation to learn more. Using MUI in a conventional way and
         avoiding custom styling will help make sure your extension continues to
@@ -51,38 +63,7 @@ export function App(): any {
           size='md'
           value={response ?? ''}
         />
-      </VStack>
-      <VStack
-  divider={<StackDivider borderColor='gray.200' />}
-  spacing={4}
-  align='stretch'
->
-  <Box h='40px' bg='yellow.200'>
-    1
-  </Box>
-  <Box h='40px' bg='tomato'>
-    2
-  </Box>
-  <Box h='40px' bg='pink.100'>
-    3
-  </Box>
-</VStack> */}
-      {/* <Grid
-  h='700'
-  templateRows='repeat(3, 1fr)'
-  templateColumns='repeat(5, 1fr)'
-  gap={4}
->
-  <GridItem rowSpan={3} colSpan={1} bg='tomato' />
-  <GridItem colSpan={1} bg='orange.300' />
-  <GridItem colSpan={1} bg='papayawhip' />
-  <GridItem colSpan={1} bg='pink.300' />
-  <GridItem colSpan={1} bg='yellow.300' />
-  <GridItem colSpan={2} bg='green.200' />
-  <GridItem colSpan={2} bg='blue.300' />
-  <GridItem colSpan={2} bg='gray.200' />  position='relative'
-  <GridItem colSpan={2} bg='purple.300' /> bg='tomato' p='4' color='white' axis='both'
-</Grid> */}
+      </Stack> */}
       <Box bg='gray.200'>
         <Grid
           templateRows='repeat(2, 2fr)'
@@ -96,13 +77,18 @@ export function App(): any {
           </GridItem>
           <GridItem colSpan={1} bg='white' boxShadow='md' p='6' rounded='md'>
             Container Selection Panel:
+            <Button variant='contained' onClick={sendMessageToTextBox}>
+              Get Containers
+            </Button>
+            <h4 id='Backend response'>{response}</h4>
           </GridItem>
           <GridItem colSpan={1} bg='white' boxShadow='md' p='6' rounded='md'>
             Suggestions Panel:
             <Accordion>
               <AccordionItem>
                 <h2>
-                  <AccordionButton _expanded={{ bg: 'green.500', color: 'white' }}>
+                  <AccordionButton
+                    _expanded={{ bg: 'green.500', color: 'white' }}>
                     <Box as='span' flex='1' textAlign='left'>
                       Resource Optimization 1
                     </Box>
@@ -119,9 +105,10 @@ export function App(): any {
 
               <AccordionItem>
                 <h2>
-                  <AccordionButton _expanded={{ bg: 'green.400', color: 'white' }}>
+                  <AccordionButton
+                    _expanded={{ bg: 'green.400', color: 'white' }}>
                     <Box as='span' flex='1' textAlign='left'>
-                    Resource Optimization 2
+                      Resource Optimization 2
                     </Box>
                     <AccordionIcon />
                   </AccordionButton>
@@ -136,9 +123,10 @@ export function App(): any {
 
               <AccordionItem>
                 <h2>
-                  <AccordionButton _expanded={{ bg: 'green.300', color: 'white' }}>
+                  <AccordionButton
+                    _expanded={{ bg: 'green.300', color: 'white' }}>
                     <Box as='span' flex='1' textAlign='left'>
-                    Resource Optimization 3
+                      Resource Optimization 3
                     </Box>
                     <AccordionIcon />
                   </AccordionButton>
