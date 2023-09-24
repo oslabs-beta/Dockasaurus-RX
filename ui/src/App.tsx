@@ -18,10 +18,14 @@ function useDockerDesktopClient() {
   return client;
 }
 
-export function App() {
+export function App(): any {
   const [response, setResponse] = React.useState<string>();
   const ddClient = useDockerDesktopClient();
 
+  const sendMessageToTextBox = async () => {
+    const result = await ddClient.extension.vm?.service?.get('/test');
+    console.log(result);
+    setResponse(JSON.stringify(result));
   const sendMessageToTextBox = async () => {
     const result = await ddClient.extension.vm?.service?.get('/test');
 
