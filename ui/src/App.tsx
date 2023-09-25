@@ -35,6 +35,7 @@ export function App(): any {
   const sendMessageToTextBox = async () => {
     try {
       let results = await ddClient.extension.vm?.service?.get('/test');
+      console.log(results);
       if (results === null) throw new Error();
       // console.log(result);
       // idk this is type script bs to check the response and make sure its an array
