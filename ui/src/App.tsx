@@ -64,8 +64,8 @@ export function App(): any {
         MUI documentation to learn more. Using MUI in a conventional way and
         avoiding custom styling will help make sure your extension continues to
         look great as Docker's theme evolves.
-      </Typography>
-      <Typography variant='body1' color='text.secondary' sx={{ mt: 2 }}>
+      </Text>
+      <Text fontSize='sm'>
         Pressing the below button will trigger a request to the backend. Its
         response will appear in the textarea.
       </Typography>
@@ -74,13 +74,9 @@ export function App(): any {
           Call backend
         </Button>
 
-        <TextField
-          label='Backend response'
-          sx={{ width: 480 }}
-          disabled
-          multiline
-          variant='outlined'
-          minRows={5}
+        <Textarea
+          placeholder='Backend response'
+          size='md'
           value={response ?? ''}
         />
       </Stack> */}
