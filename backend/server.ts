@@ -35,7 +35,11 @@ try {
 app.get('/test', async (req: any, res: any) => {
   try {
     const data = await getDockerContainers();
-    res.json(data);
+    const images = [];
+    for (let i = 0; i < data.length; i++) {
+      images.push(data[i]['Names']);
+    }
+    res.json(images);
   } catch (err) {
     console.log(err);
     res.status(500).send('Internal Server Error');

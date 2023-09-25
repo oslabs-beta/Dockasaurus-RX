@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { Stack, TextField, Typography } from '@mui/material';
 import { Text } from '@chakra-ui/react';
@@ -25,16 +25,31 @@ function useDockerDesktopClient() {
 }
 
 export function App(): any {
-  const [response, setResponse] = React.useState<string>();
   const ddClient = useDockerDesktopClient();
+  const [containers, setContainers] = useState<React.ReactElement[]>();
+
+  useEffect(() => {
+    sendMessageToTextBox();
+  }, []);
 
   const sendMessageToTextBox = async () => {
     try {
-      const result:Array<Object> = await ddClient.extension.vm?.service?.get('/test');
-      if (result === null)
+      let results = await ddClient.extension.vm?.service?.get('/test');
+      if (results === null) throw new Error();
       // console.log(result);
-      const images = result.map((container) => container?['Image']:String);
-      setResponse(images);
+      // idk this is type script bs to check the response and make sure its an array
+      if (
+        Array.isArray(results) &&
+        results.every(item => typeof item === 'object')
+      ) {
+        setContainers(
+          results.map(container => (
+            <Button key={container}>{container}</Button>
+          )),
+        );
+      } else {
+        throw new Error('The "results" variable must be an array of Objects');
+      }
     } catch (err) {
       throw new Error();
     }
@@ -81,10 +96,7 @@ export function App(): any {
           </GridItem>
           <GridItem colSpan={1} bg='white' boxShadow='md' p='6' rounded='md'>
             Container Selection Panel:
-            <Button variant='contained' onClick={sendMessageToTextBox}>
-              Get Containers
-            </Button>
-            <h4 id='Backend response'>{response}</h4>
+            {containers}
           </GridItem>
           <GridItem colSpan={1} bg='white' boxShadow='md' p='6' rounded='md'>
             Suggestions Panel:
