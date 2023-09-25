@@ -37,7 +37,7 @@ app.get('/test', async (req: any, res: any) => {
     const data = await getDockerContainers();
     const images = [];
     for (let i = 0; i < data.length; i++) {
-      images.push(data[i]['Names']);
+      images.push({ Name: data[i]['Names'], Id: data[i]['Id'], Image: data[i]['Image'], Created: data[i]['Created'], Ports: data[i]['Ports'], Status: data[i]['Status'] });
     }
     res.json(images);
   } catch (err) {

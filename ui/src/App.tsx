@@ -9,6 +9,9 @@ import Paper from '@mui/material/Paper';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
 // Note: This line relies on Docker Desktop's presence as a host application.
 // If you're running this React app in a browser, it won't work properly.
@@ -40,7 +43,71 @@ export function App() {
         //set state of containers to an array of buttons, removes the first character which is a forward slash
         setContainers(
           results.map(container => (
-            <Button key={container}>{container}</Button>
+            <React.Fragment>
+              <CardContent
+                style={{
+                  textTransform: 'uppercase',
+                  border: '1px',
+                  padding: '.5rem',
+                  margin: '3px',
+                }}>
+                <Typography sx={{ fontSize: 16, textTransform: 'uppercase', fontWeight: 'bold' }} color='text.primary'>
+                  {container.Name}
+                </Typography>
+                <Typography sx={{ fontSize: 14 }} color='text.secondary'>
+                  Status: {container.Status}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: 14 }}
+                  color='text.secondary'
+                  gutterBottom>
+                  {'Port: 8080'}
+                </Typography>
+                <Typography variant='body2'>
+                  {'Container Size:'}
+                  <br />
+                  Created: {container.Created}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant='text'
+                  style={{
+                    textTransform: 'uppercase',
+                    fontSize: '.95em',
+                    borderRadius: '20px',
+                    borderColor: 'text.secondary',
+                    padding: '.5rem',
+                    margin: '3px',
+                  }}>
+                  More
+                </Button>
+                <Button
+                  variant='text'
+                  style={{
+                    textTransform: 'uppercase',
+                    fontSize: '.95em',
+                    borderRadius: '20px',
+                    borderColor: 'text.secondary',
+                    padding: '.5rem',
+                    margin: '3px',
+                  }}>
+                  Select
+                </Button>
+                <Button
+                  variant='text'
+                  style={{
+                    textTransform: 'uppercase',
+                    fontSize: '.95em',
+                    borderRadius: '20px',
+                    borderColor: 'text.secondary',
+                    padding: '.5rem',
+                    margin: '3px',
+                  }}>
+                  Run
+                </Button>
+              </CardActions>
+            </React.Fragment>
           )),
         );
       } else {
@@ -113,7 +180,7 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Item>Container Panel: {containers}</Item>
+              <Item>Container Panel: {containers} </Item>
             </Box>
           </Grid>
           <Grid xs={12} md={6}>
