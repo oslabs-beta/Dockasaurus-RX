@@ -1,7 +1,7 @@
 import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
-
+import http from 'node:http';
 type AxiosInstance = typeof axios;
 
 interface Container {
@@ -15,11 +15,40 @@ interface Container {
 }
 
 async function getDockerContainers(): Promise<Container[]> {
-  const response = await axios.get<Container[]>('/containers/json', {
+  console.log('hello2');
+  const options = {
     socketPath: '/var/run/docker.sock',
-    params: { all: true },
+    method: 'GET',
+    path: '/containers/json',
+  };
+  const data = await new Promise<Container[]>((resolve, reject) => {
+    console.log('hello3');
+    const req = http.request(options, res => {
+      console.log('hello4');
+      console.log(res);
+      let rawData = '';
+      res.on('data', chunk => {
+        rawData += chunk;
+        console.log('rawData: ', rawData);
+      });
+      res.on('end', () => {
+        resolve(JSON.parse(rawData));
+        // try {
+        //   const parsedData = JSON.parse(rawData);
+        //   resolve(parsedData);
+        // } catch (e) {
+        //   reject(e);
+        // }
+      });
+    });
+    req.end();
   });
-  const containers = response.data;
+  console.log('Data: ', data);
+  // const response = await axios.get<Container[]>('/containers/json', {
+  //   socketPath: '/var/run/docker.sock',
+  //   params: { all: true },
+  // });
+  const containers = data;
 
   return containers;
 }
