@@ -42,6 +42,7 @@ export function App(): any {
         Array.isArray(results) &&
         results.every(item => typeof item === 'object')
       ) {
+        //set state of containers to an array of buttons, removes the first character which is a forward slash
         setContainers(
           results.map(container => (
             <Button key={container}>{container}</Button>
