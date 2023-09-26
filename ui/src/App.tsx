@@ -78,10 +78,11 @@ export function App() {
 
   const getContainerStats = async (Id: string): Promise<Object | void> => {
     try {
-      const response = (await ddClient.extension.vm?.service?.get(
+      console.log(Id);
+      const data = await ddClient.extension.vm?.service?.get(
         `/api/stats/${Id}`,
-      )) as Response;
-      const data = await response.json();
+      );
+      console.log(data);
       const dataString = JSON.stringify(data, null, 2);
       setGraphData(dataString);
     } catch (error: any) {
