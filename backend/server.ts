@@ -1,7 +1,7 @@
 import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
-
+import http from 'node:http';
 type AxiosInstance = typeof axios;
 
 interface Container {
@@ -60,15 +60,68 @@ interface CPUStats {
 }
 
 async function getDockerContainers(): Promise<Container[]> {
-  const response = await axios.get<Container[]>('/containers/json', {
+  const options = {
     socketPath: '/var/run/docker.sock',
-    params: { all: true },
+    method: 'GET',
+    path: '/containers/json',
+  };
+  const data = await new Promise<Container[]>((resolve, reject) => {
+    const req = http.request(options, res => {
+      //console.log(res);
+      let rawData = '';
+      res.on('data', chunk => {
+        rawData += chunk;
+        //console.log('rawData: ', rawData);
+      });
+      res.on('end', () => {
+        resolve(JSON.parse(rawData));
+      });
+    });
+    req.end();
   });
-  const containers = response.data;
+  //console.log('Data: ', data);
+  // const response = await axios.get<Container[]>('/containers/json', {
+  //   socketPath: '/var/run/docker.sock',
+  //   params: { all: true },
+  // });
+  const containers = data;
 
   return containers;
 }
+async function getDockerContainerStats(id: String): Promise<Object> {
+  const options = {
+    socketPath: '/var/run/docker.sock',
+    method: 'GET',
+    path: `/containers/${id}/stats?stream=false`,
+  };
+  const data = await new Promise<Object[]>((resolve, reject) => {
+    const req = http.request(options, res => {
+      //console.log(res);
+      let stats: object[] = [];
+      res.on('data', chunk => {
+        stats.push(JSON.parse('' + chunk));
+        console.log('rawData: ', '' + chunk);
+      });
+      res.on('end', () => {
+        resolve(stats);
+      });
+    });
+    req.end();
+  });
+  //console.log('Data: ', data);
+  // const response = await axios.get<Container[]>('/containers/json', {
+  //   socketPath: '/var/run/docker.sock',
+  //   params: { all: true },
+  // });
+  const containers = data;
 
+  return containers;
+}
+getDockerContainers().then(data => {
+  getDockerContainerStats(data[0].Id).then(data2 => {
+    console.log('data:', data2);
+  });
+});
 const app = express();
 
 try {
