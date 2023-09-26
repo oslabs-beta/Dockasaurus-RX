@@ -12,6 +12,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import { ExpandCircleDown } from '@mui/icons-material';
 
 // Note: This line relies on Docker Desktop's presence as a host application.
 // If you're running this React app in a browser, it won't work properly.
@@ -43,41 +44,36 @@ export function App() {
         //set state of containers to an array of buttons, removes the first character which is a forward slash
         setContainers(
           results.map(container => (
-            <React.Fragment>
+            <Card variant='outlined' style={{ margin: '7px', padding: '10px 7px 0px 7px', width: '29%', minWidth: '100px'}}>
               <CardContent
-                style={{
+                sx={{
                   textTransform: 'uppercase',
-                  border: '1px',
                   padding: '.5rem',
-                  margin: '3px',
+                  margin: '0px',
                 }}>
-                <Typography sx={{ fontSize: 16, textTransform: 'uppercase', fontWeight: 'bold' }} color='text.primary'>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                  }}
+                  color='text.primary'>
                   {container.Name}
                 </Typography>
-                <Typography sx={{ fontSize: 14 }} color='text.secondary'>
+                <Typography sx={{ fontSize: 13 }} color='text.secondary'>
                   Status: {container.Status}
                 </Typography>
-                <Typography
-                  sx={{ fontSize: 14 }}
-                  color='text.secondary'
-                  gutterBottom>
+                <Typography sx={{ fontSize: 13 }} color='text.secondary'>
                   {'Port: 8080'}
                 </Typography>
-                <Typography variant='body2'>
-                  {'Container Size:'}
-                  <br />
-                  Created: {container.Created}
-                </Typography>
-              </CardContent>
-              <CardActions>
+                <br></br>
                 <Button
                   variant='text'
                   style={{
                     textTransform: 'uppercase',
                     fontSize: '.95em',
                     borderRadius: '20px',
-                    borderColor: 'text.secondary',
-                    padding: '.5rem',
+                    padding: '.35rem',
                     margin: '3px',
                   }}>
                   More
@@ -88,8 +84,7 @@ export function App() {
                     textTransform: 'uppercase',
                     fontSize: '.95em',
                     borderRadius: '20px',
-                    borderColor: 'text.secondary',
-                    padding: '.5rem',
+                    padding: '.35rem',
                     margin: '3px',
                   }}>
                   Select
@@ -100,14 +95,13 @@ export function App() {
                     textTransform: 'uppercase',
                     fontSize: '.95em',
                     borderRadius: '20px',
-                    borderColor: 'text.secondary',
-                    padding: '.5rem',
+                    padding: '.35rem',
                     margin: '3px',
                   }}>
                   Run
                 </Button>
-              </CardActions>
-            </React.Fragment>
+              </CardContent>
+            </Card>
           )),
         );
       } else {
@@ -180,13 +174,12 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Item>Container Panel: {containers} </Item>
+              <Item style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>{containers}</Item>
             </Box>
           </Grid>
           <Grid xs={12} md={6}>
             <Box
               sx={{
-                flexGrow: 0,
                 boxShadow: '4px 4px 7px 0px rgba(0, 0, 0, .25)',
                 padding: '0rem',
                 height: '100%',
@@ -194,7 +187,8 @@ export function App() {
               <Item>
                 <Accordion>
                   <AccordionSummary
-                    aria-controls='panel2a-content'
+                    expandIcon={<ExpandCircleDown />}
+                    aria-controls='panel1a-content'
                     id='panel1a-header'>
                     <Typography>Optimization Suggestion 1</Typography>
                   </AccordionSummary>
@@ -213,6 +207,7 @@ export function App() {
                 </Accordion>
                 <Accordion>
                   <AccordionSummary
+                    expandIcon={<ExpandCircleDown />}
                     aria-controls='panel2a-content'
                     id='panel2a-header'>
                     <Typography>Optimization Suggestion 2</Typography>
@@ -232,6 +227,7 @@ export function App() {
                 </Accordion>
                 <Accordion>
                   <AccordionSummary
+                    expandIcon={<ExpandCircleDown />}
                     aria-controls='panel3a-content'
                     id='panel3a-header'>
                     <Typography>Optimization Suggestion 3</Typography>
