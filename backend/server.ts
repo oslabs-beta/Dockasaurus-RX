@@ -4,7 +4,6 @@ import fs from 'fs';
 import http from 'node:http';
 type AxiosInstance = typeof axios;
 
-
 interface Container {
   Id: string;
   Image: string;
@@ -13,7 +12,7 @@ interface Container {
   Status: string;
   Ports: string[];
   Names: string[];
-};
+}
 
 const app = express();
 
@@ -22,15 +21,21 @@ try {
   console.log('Deleted the UNIX socket file.');
 } catch (err) {
   console.log('Did not need to delete the UNIX socket file.');
-};
-
+}
 
 app.get('/test', async (req: any, res: any) => {
   try {
     const data = await getDockerContainers();
     const images = [];
     for (let i = 0; i < data.length; i++) {
-      images.push({ Name: data[i]['Names'], Id: data[i]['Id'], Image: data[i]['Image'], Created: data[i]['Created'], Ports: data[i]['Ports'], Status: data[i]['Status'] });
+      images.push({
+        Name: data[i]['Names'],
+        Id: data[i]['Id'],
+        Image: data[i]['Image'],
+        Created: data[i]['Created'],
+        Ports: data[i]['Ports'],
+        Status: data[i]['Status'],
+      });
     }
     res.json(images);
   } catch (err) {
@@ -43,7 +48,7 @@ async function getDockerContainers(): Promise<Container[]> {
   const options = {
     socketPath: '/var/run/docker.sock',
     method: 'GET',
-    path: '/containers/json',
+    path: '/containers/json?all=1',
   };
   const data = await new Promise<Container[]>((resolve, reject) => {
     const req = http.request(options, res => {
@@ -68,6 +73,17 @@ async function getDockerContainers(): Promise<Container[]> {
 
   return containers;
 }
+
+app.get('/api/stats/:id', async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const data = await getDockerContainerStats(id);
+    res.json(data);
+  } catch (error: any) {
+    res.status(400).send(error.message);
+  }
+});
+
 async function getDockerContainerStats(id: String): Promise<Object> {
   const options = {
     socketPath: '/var/run/docker.sock',
@@ -102,8 +118,6 @@ getDockerContainers().then(data => {
     console.log('data:', data2);
   });
 });
-
-
 
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);

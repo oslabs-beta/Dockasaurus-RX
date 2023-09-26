@@ -13,7 +13,6 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
-
 interface DockerStats {
   read: string;
   pids_stats: Record<string, number>;
@@ -68,21 +67,25 @@ function useDockerDesktopClient() {
 }
 
 export function App(): any {
-  const [response, setResponse] = React.useState<string>();
   const ddClient = useDockerDesktopClient();
   const [containers, setContainers] = useState<React.ReactElement[]>();
-  // const [containerStats, setContainerStats] = useState<DockerStats | undefined>(undefined);
-  const containerId = '733227267ef60e04a8434faf6774773261d593aaae153bd35810ab153ea9b5ec';
-  console.log('in app')
+  const [graphData, setGraphData] = useState<any>();
+
   useEffect(() => {
     sendMessageToTextBox();
-    // const fetchContainerStats = async () => {
-    //   const containerStats = await ddClient.extension.vm?.service?.get('/stats');;
-    //   setContainerStats(containerStats.data);
-    // };
-
-    // fetchContainerStats();
   }, []);
+
+  const getContainerStats = async (Id: string): Promise<Object | void> => {
+    try {
+      const response = (await ddClient.extension.vm?.service?.get(
+        `/api/stats/${Id}`,
+      )) as Response;
+      const data = await response.json();
+      setGraphData(data);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   const sendMessageToTextBox = async () => {
     try {
@@ -106,7 +109,13 @@ export function App(): any {
                   padding: '.5rem',
                   margin: '3px',
                 }}>
-                <Typography sx={{ fontSize: 16, textTransform: 'uppercase', fontWeight: 'bold' }} color='text.primary'>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                  }}
+                  color='text.primary'>
                   {container.Name}
                 </Typography>
                 <Typography sx={{ fontSize: 14 }} color='text.secondary'>
@@ -138,6 +147,7 @@ export function App(): any {
                   More
                 </Button>
                 <Button
+                  onClick={() => getContainerStats(container.Id)}
                   variant='text'
                   style={{
                     textTransform: 'uppercase',
@@ -173,11 +183,6 @@ export function App(): any {
     }
   };
 
-  const fetchAndDisplayResponse = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/hello');
-    setResponse(JSON.stringify(result));
-  };
-
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -197,16 +202,6 @@ export function App(): any {
   //     console.log(err);
   //   }
   // };
-  const getContainerStats = async (containerId: string) => {
-    try {
-      const results = await ddClient.extension.vm?.service?.get(`/stats/${containerId}`);
-      console.log(results);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  getContainerStats(containerId);
-
 
   return (
     <>
@@ -247,6 +242,7 @@ export function App(): any {
                 height: '100%',
               }}>
               <Item>Dashboard Panel:</Item>
+              {graphData}
             </Box>
           </Grid>
           <Grid xs={12} md={6}>
