@@ -4,3 +4,18 @@ services:
     container_name: drx
     volumes:
       - /var/run/docker.sock.raw:/var/run/docker.sock
+      - shared-prometheus-files:/prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - shared-prometheus-files:/prometheus
+      - prometheusdata:/prometheus
+volumes:
+  prometheusdata:
+  shared-prometheus-files:

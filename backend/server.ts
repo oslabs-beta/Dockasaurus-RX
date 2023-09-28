@@ -34,7 +34,11 @@ app.get('/test', async (req: any, res: any) => {
         Id: data[i]['Id'],
         Image: data[i]['Image'],
         Created: data[i]['Created'],
+<<<<<<< HEAD
         Ports: data[i]['Ports'],
+=======
+        Port: data[i]['Ports'],
+>>>>>>> 5c8ed917919fcf2e5268a798404f4449656649c0
         Status: data[i]['Status'],
       });
     }
