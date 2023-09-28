@@ -2,6 +2,7 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
+import { client } from 'prom-client';
 type AxiosInstance = typeof axios;
 
 interface Container {
@@ -28,7 +29,14 @@ app.get('/test', async (req: any, res: any) => {
     const data = await getDockerContainers();
     const images = [];
     for (let i = 0; i < data.length; i++) {
-      images.push({ Name: data[i]['Names'], Id: data[i]['Id'], Image: data[i]['Image'], Created: data[i]['Created'], Ports: data[i]['Ports'], Status: data[i]['Status'] });
+      images.push({
+        Name: data[i]['Names'],
+        Id: data[i]['Id'],
+        Image: data[i]['Image'],
+        Created: data[i]['Created'],
+        Ports: data[i]['Ports'],
+        Status: data[i]['Status'],
+      });
     }
     res.json(images);
   } catch (err) {
@@ -81,7 +89,7 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   const options = {
     socketPath: '/var/run/docker.sock',
     method: 'GET',
-    path: `/containers/${id}/stats?stream=false`,
+    path: `/containers/${id}/stats`,
   };
   const data = await new Promise<Object[]>((resolve, reject) => {
     const req = http.request(options, res => {
@@ -106,11 +114,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
 
   return containers;
 }
-getDockerContainers().then(data => {
-  getDockerContainerStats(data[0].Id).then(data2 => {
-    console.log('data:', data2);
-  });
-});
 
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
