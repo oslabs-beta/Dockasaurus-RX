@@ -2,7 +2,7 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
-import { client } from 'prom-client';
+import prometheusClient from 'prom-client';
 type AxiosInstance = typeof axios;
 
 interface Container {
@@ -34,11 +34,7 @@ app.get('/test', async (req: any, res: any) => {
         Id: data[i]['Id'],
         Image: data[i]['Image'],
         Created: data[i]['Created'],
-<<<<<<< HEAD
         Ports: data[i]['Ports'],
-=======
-        Port: data[i]['Ports'],
->>>>>>> 5c8ed917919fcf2e5268a798404f4449656649c0
         Status: data[i]['Status'],
       });
     }
@@ -93,7 +89,7 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   const options = {
     socketPath: '/var/run/docker.sock',
     method: 'GET',
-    path: `/containers/${id}/stats`,
+    path: `/containers/${id}/stats?stream=false`,
   };
   const data = await new Promise<Object[]>((resolve, reject) => {
     const req = http.request(options, res => {
@@ -101,7 +97,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
       let stats: object[] = [];
       res.on('data', chunk => {
         stats.push(JSON.parse('' + chunk));
-        console.log('rawData: ', '' + chunk);
       });
       res.on('end', () => {
         resolve(stats);
@@ -118,10 +113,24 @@ async function getDockerContainerStats(id: String): Promise<Object> {
 
   return containers;
 }
-
+app.get('/test2', async (req, res) => {
+  const result = await axios.get('http://localhost:42069/metrics');
+  const data = result.data;
+  res.status(200).json(data);
+});
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
+const promConnection = express();
+promConnection.get('/metrics', async (req, res) => {
+  const containers = await getDockerContainers();
+  const stats = await Promise.all(
+    containers.map(e => getDockerContainerStats(e.Id)),
+  );
+  console.log('all stats', stats);
+  res.status(200).json(stats);
+});
+promConnection.listen(42069);
 
 // import Bun from '@bun/bun';
 

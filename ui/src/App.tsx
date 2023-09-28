@@ -2,11 +2,9 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Box from '@mui/material/Box';
 import CardContainer from '../components/CardContainer';
 import Suggestions from '../components/Suggestions';
-import Item from '../components/Item'
+import Item from '../components/Item';
 
 export function App() {
->>>>>>> 5c8ed917919fcf2e5268a798404f4449656649c0
-
   // const stats = async () => {
   //   try {
   //     const result = await ddClient.extension.vm?.service?.get('/stats');
@@ -30,7 +28,6 @@ export function App() {
                 height: '100%',
               }}>
               <Item>Dashboard Panel:</Item>
-              <h6>{graphData}</h6>
             </Box>
           </Grid>
           <Grid xs={12} md={7}>
