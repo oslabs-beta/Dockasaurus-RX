@@ -4,6 +4,7 @@ import fs from 'fs';
 import http from 'node:http';
 import { cpuUsageGauge, memoryUsageGauge, registry } from './promClient';
 
+
 type AxiosInstance = typeof axios;
 
 interface DockerStats {
@@ -80,7 +81,7 @@ app.get('/test', async (req: any, res: any) => {
         Id: data[i]['Id'],
         Image: data[i]['Image'],
         Created: data[i]['Created'],
-        Port: data[i]['Ports'],
+        Ports: data[i]['Ports'],
         Status: data[i]['Status'],
       });
     }
@@ -143,7 +144,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
       let stats: DockerStats[] = [];
       res.on('data', chunk => {
         stats.push(JSON.parse('' + chunk));
-        console.log('rawData: ', '' + chunk);
       });
       res.on('end', () => {
         resolve(stats);

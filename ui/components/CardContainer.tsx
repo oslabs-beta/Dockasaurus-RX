@@ -12,10 +12,10 @@ function useDockerDesktopClient() {
 const CardContainer = () => {
   const ddClient = useDockerDesktopClient();
   const [containers, setContainers] = useState<React.ReactElement[]>([]);
-  const testClick = async () => {
-    const result = ddClient.extension.vm?.service?.get('/metrics');
+  const natetestclick = async () => {
+    const result = await ddClient.extension.vm?.service?.get('/test2');
     console.log(result);
-  }
+  };
   useEffect(() => {
     sendMessageToTextBox();
   }, []);
@@ -43,7 +43,7 @@ const CardContainer = () => {
                   <b>Port:</b> 8080
                 </Typography>
                 <br />
-                
+
                 <Button
                   variant='text'
                   onClick={testClick}
@@ -58,6 +58,7 @@ const CardContainer = () => {
                 </Button>
                 <Button
                   variant='text'
+                  onClick={natetestclick}
                   sx={{
                     textTransform: 'uppercase',
                     fonSize: '0.95em',
@@ -79,11 +80,17 @@ const CardContainer = () => {
     }
   };
 
-  return <div className='containersDiv' style={{
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-  }}>{containers}</div>;
+  return (
+    <div
+      className='containersDiv'
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly',
+      }}>
+      {containers}
+    </div>
+  );
 };
 
 export default CardContainer;
