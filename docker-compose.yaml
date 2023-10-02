@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   DRX:
     image: ${DESKTOP_PLUGIN_IMAGE}
@@ -6,7 +7,7 @@ services:
       - /var/run/docker.sock.raw:/var/run/docker.sock
       - shared-prometheus-files:/prometheus
     ports:
-      - 42069:42069
+      - 2424:2424
   prometheus:
     image: prom/prometheus
     container_name: prometheus

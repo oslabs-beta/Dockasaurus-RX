@@ -26,7 +26,8 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     com.docker.extension.categories="" \
     com.docker.extension.changelog=""
 
-COPY backend/server.ts ./backend/server.ts
+COPY backend ./backend
+COPY prometheus /prometheus
 COPY docker-compose.yaml /
 COPY prometheus /prometheus
 COPY metadata.json /
