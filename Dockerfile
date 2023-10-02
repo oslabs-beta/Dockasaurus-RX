@@ -12,6 +12,7 @@ RUN npm i
 RUN npm run build
 
 FROM node:18.12-alpine3.16
+
 WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
     org.opencontainers.image.description="Docker Resource Management Extension" \
@@ -26,8 +27,8 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     com.docker.extension.changelog=""
 
 COPY backend/server.ts ./backend/server.ts
-COPY prometheus prometheus
 COPY docker-compose.yaml /
+COPY prometheus /prometheus
 COPY metadata.json /
 COPY package.json .
 COPY docker.svg /

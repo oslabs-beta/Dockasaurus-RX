@@ -16,8 +16,11 @@ services:
       - 9090:9090
     restart: unless-stopped
     volumes:
-      - shared-prometheus-files:/prometheus
+      - shared-prometheus-files:/etc/prometheus
       - prometheusdata:/prometheus
+    depends_on:
+      - DRX
+
 volumes:
   prometheusdata:
   shared-prometheus-files:
