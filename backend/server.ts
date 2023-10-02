@@ -2,8 +2,54 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
-import prometheusClient from 'prom-client';
+import { cpuUsageGauge, memoryUsageGauge, registry } from './promClient';
+
 type AxiosInstance = typeof axios;
+
+interface DockerStats {
+  read: string;
+  pids_stats: Record<string, number>;
+  networks: Record<string, NetworkStats>;
+  memory_stats: MemoryStats;
+  blkio_stats: Record<string, unknown>;
+  cpu_stats: CPUStats;
+  precpu_stats: CPUStats;
+}
+
+interface NetworkStats {
+  rx_bytes: number;
+  rx_dropped: number;
+  rx_errors: number;
+  rx_packets: number;
+  tx_bytes: number;
+  tx_dropped: number;
+  tx_errors: number;
+  tx_packets: number;
+}
+
+interface MemoryStats {
+  stats: Record<string, number>;
+  max_usage: number;
+  usage: number;
+  failcnt: number;
+  limit: number;
+}
+
+interface CPUStats {
+  cpu_usage: {
+    percpu_usage: number[];
+    usage_in_usermode: number;
+    total_usage: number;
+    usage_in_kernelmode: number;
+  };
+  system_cpu_usage: number;
+  online_cpus: number;
+  throttling_data: {
+    periods: number;
+    throttled_periods: number;
+    throttled_time: number;
+  };
+}
 
 interface Container {
   Id: string;
@@ -91,10 +137,10 @@ async function getDockerContainerStats(id: String): Promise<Object> {
     method: 'GET',
     path: `/containers/${id}/stats?stream=false`,
   };
-  const data = await new Promise<Object[]>((resolve, reject) => {
+  const data = await new Promise<DockerStats[]>((resolve, reject) => {
     const req = http.request(options, res => {
       //console.log(res);
-      let stats: object[] = [];
+      let stats: DockerStats[] = [];
       res.on('data', chunk => {
         stats.push(JSON.parse('' + chunk));
       });
@@ -104,35 +150,77 @@ async function getDockerContainerStats(id: String): Promise<Object> {
     });
     req.end();
   });
+  console.log(data);
+  const cpu_stats = data[0].cpu_stats;
+  const precpu_stats = data[0].precpu_stats;
+  const memory_stats = data[0].memory_stats;
+  const networks = data[0].networks;
+
+  //calculate cpu usage %
+  const cpu_delta =
+    cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage;
+  const system_cpu_delta =
+    cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage;
+  const number_cpus = cpu_stats.online_cpus;
+  const cpu_usage_percent =
+    (cpu_delta / system_cpu_delta) * number_cpus * 100.0;
+
+  //calculate memory usage %
+  const used_memory = memory_stats.usage - (memory_stats.stats?.cache || 0);
+  const available_memory = memory_stats.limit;
+  const memory_usage_percent = (used_memory / available_memory) * 100.0;
+
+  cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
+  memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
+
   //console.log('Data: ', data);
   // const response = await axios.get<Container[]>('/containers/json', {
   //   socketPath: '/var/run/docker.sock',
   //   params: { all: true },
   // });
+  console.log('cpu_usage%', cpu_usage_percent);
+  console.log('gauge', cpuUsageGauge);
+  console.log('registry', registry);
   const containers = data;
-
+  // console.log(containers);
+  // console.log('containers: ', containers[0].cpu_stats);
   return containers;
 }
-app.get('/test2', async (req, res) => {
-  const result = await axios.get('http://localhost:42069/metrics');
-  const data = result.data;
-  res.status(200).json(data);
-});
+// getDockerContainers().then(data => {
+//   getDockerContainerStats(data[0].Id).then(data2 => {
+//     console.log('data:', data2);
+//   });
+// });
+
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
+});
+
+app.get('/test2', async (req, res) => {
+  const result = await axios.get('http://localhost:2424/metrics');
+  const data = result.data;
+  console.log('data from test2 endpoint', data);
+  res.status(200).json(data);
 });
 
 const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
+  // console.log('in metrics endpoint');
   const containers = await getDockerContainers();
   const stats = await Promise.all(
     containers.map(e => getDockerContainerStats(e.Id)),
   );
-  console.log('all stats', stats);
-  res.status(200).json(stats);
+  // console.log('all stats', stats);
+  // res.status(200).json(stats);
+  console.log('in metrics endpoint');
+  res.set('Content-Type', registry.contentType);
+  const data = await registry.metrics();
+
+  // console.log('data from metrics endpoint', data);
+  res.status(200).send(data);
 });
-promConnection.listen(42069);
+promConnection.listen(2424);
 
 // import Bun from '@bun/bun';
 
