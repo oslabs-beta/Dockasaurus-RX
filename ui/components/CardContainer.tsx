@@ -12,7 +12,7 @@ function useDockerDesktopClient() {
 const CardContainer = () => {
   const ddClient = useDockerDesktopClient();
   const [containers, setContainers] = useState<React.ReactElement[]>([]);
-  const natetestclick = async () => {
+  const testclick = async () => {
     const result = await ddClient.extension.vm?.service?.get('/test2');
     console.log(result);
   };
@@ -46,7 +46,7 @@ const CardContainer = () => {
 
                 <Button
                   variant='text'
-                  onClick={testClick}
+                  onClick={testclick}
                   sx={{
                     textTransform: 'uppercase',
                     fonSize: '0.95em',
@@ -58,7 +58,7 @@ const CardContainer = () => {
                 </Button>
                 <Button
                   variant='text'
-                  onClick={natetestclick}
+                  onClick={testclick}
                   sx={{
                     textTransform: 'uppercase',
                     fonSize: '0.95em',

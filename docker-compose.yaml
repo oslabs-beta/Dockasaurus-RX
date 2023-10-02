@@ -7,7 +7,7 @@ services:
       - /var/run/docker.sock.raw:/var/run/docker.sock
       - shared-prometheus-files:/prometheus
     ports:
-      - 4242:4242
+      - 2424:2424
   prometheus:
     image: prom/prometheus
     container_name: prometheus
