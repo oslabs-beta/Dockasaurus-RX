@@ -1,6 +1,89 @@
+version: '3.8'
 services:
   DRX:
     image: ${DESKTOP_PLUGIN_IMAGE}
     container_name: drx
     volumes:
       - /var/run/docker.sock.raw:/var/run/docker.sock
+      # - shared-grafana-files:/grafana
+      - shared-prometheus-files:/prometheus
+    ports:
+    - 2424:2424
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    volumes:
+      # Create a named volume for the prometheus data
+      - prometheusdata:/prometheus
+      # Share the named volume with the prometheus container
+      - shared-prometheus-files:/etc/prometheus
+    depends_on:
+      - DRX
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - 2999:3000
+  #   volumes:
+  #     # Share the named volume with the grafana container
+  #     - shared-grafana-files:/etc/grafana
+  #   environment:
+  #     GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+  #   depends_on:
+  #     - prometheus
+
+volumes:
+  prometheusdata:
+  # shared-grafana-files:
+  shared-prometheus-files:
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   ports:
+  #   - 8080:8080
+  #   command:
+  #   - --config.file=/etc/prometheus/prometheus.yml
+  #   volumes:
+  #   - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    # depends_on:
+    # - cadvisor
+  # node_explorer:
+  #   image: prom/node-exporter:latest
+  #   container_name: node-exporter
+  #   restart: unless-stopped
+  #   #named volumes are persistant so the data in them is preserved even after the container is stopped or removed. can be shared across multiple containers, great for dbs. can be backed up and restored
+  #   volumes: 
+  #   #/proc directory contains info about the running system such as process info and system stats.  
+  #     - /proc:/host/proc:ro
+  #     #/sys contains info about the hardware devices connected to the system.
+  #     - /sys:/host/sys:ro
+  #     #/ contains the root filesystem of the operating system
+  #     - /:/rootfs:ro
+  #   command: #specifies the command that should be ran when the container is started
+  #   #This argument tells the Node Exporter tool to exclude the/sys,/proc,/dev,/host, and/etcdirectories from its filesystem collection. 
+  #   # ^^ important bc these directories contain sensitive info that should not be exposed to the node exporter tool
+  #   #The()()` part of the argument is a regular expression that matches the root directory and the process ID of the Node Exporter process.
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.rootfs=/rootfs'
+  #     - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc) ($$|/)'
+  #   ports:
+  #     - 9100:9100
+  #   networks:
+  #     - monitoring
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:latest
+  #   container_name: cadvisor
+  #   ports:
+  #   - 8080:8080
+  #   volumes:
+  #   - /:/rootfs:ro
+  #   - /var/run:/var/run:rw
+  #   - /sys:/sys:ro
+  #   - /var/lib/docker/:/var/lib/docker:ro
