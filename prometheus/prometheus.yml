@@ -1,8 +1,6 @@
 scrape_configs:
-  - job_name: docker_stats
+  - job_name: docker_container_metrics
     scrape_interval: 2s
-    metrics_path: '/metrics'
-    scheme: http
-    scrape_timeout: 30s
+    metrics_path: /metrics
     static_configs:
-      - targets: ['localhost:42069']
+      - targets: ['host.docker.internal:42069']

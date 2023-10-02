@@ -121,8 +121,10 @@ app.get('/test2', async (req, res) => {
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
+
 const promConnection = express();
-promConnection.use('/metrics', async (req, res) => {
+
+promConnection.get('/metrics', async (req, res) => {
   const containers = await getDockerContainers();
   const stats = await Promise.all(
     containers.map(e => getDockerContainerStats(e.Id)),
