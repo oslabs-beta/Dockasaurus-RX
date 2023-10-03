@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createDockerDesktopClient } from '@docker/extension-api-client';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from '@mui/material';
 import '../../ui/css/style.css';
 
 const client = createDockerDesktopClient();
@@ -59,7 +65,7 @@ const CardContainer = (): any => {
               <b>Status:</b> {container.Status}
             </Typography>
             <Typography color='text.secondary'>
-              <b>Port:</b> 8080
+              <b>Port:</b> {container.Ports[0]['PublicPort']}
             </Typography>
             <br />
 
@@ -99,10 +105,14 @@ const CardContainer = (): any => {
         flexWrap: 'wrap',
         justifyContent: 'space-evenly',
       }}>
-      <input
+      <TextField
+        fullWidth
+        variant='outlined'
+        label='Search by Name or Port'
         onChange={e => {
           setSearch(e.target.value);
-        }}></input>
+        }}></TextField>
+      <br></br>
       {displayContainers}
     </div>
   );
