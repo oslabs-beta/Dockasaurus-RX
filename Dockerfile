@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:18.12-alpine3.16 AS client-builder
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17 AS client-builder
 WORKDIR /ui
 # cache packages in layer
 COPY ui/package.json /ui/package.json
@@ -11,7 +11,7 @@ COPY ui /ui
 RUN npm i
 RUN npm run build
 
-FROM node:18.12-alpine3.16
+FROM node:current-alpine3.17
 
 WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
