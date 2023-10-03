@@ -47,7 +47,7 @@ const CardContainer = (): any => {
   };
   // console.log(containers);
   // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
-
+  console.log(containers);
   const displayContainers = containers
     .filter(
       (e: any) =>
@@ -65,7 +65,10 @@ const CardContainer = (): any => {
               <b>Status:</b> {container.Status}
             </Typography>
             <Typography color='text.secondary'>
-              <b>Port:</b> {container.Ports[0]['PublicPort']}
+              <b>Port:</b>{' '}
+              {container.Ports.map((e: any) => {
+                return e['PublicPort'];
+              }).toString()}
             </Typography>
             <br />
 
