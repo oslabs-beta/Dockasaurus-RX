@@ -45,8 +45,8 @@ const CardContainer = (): any => {
       throw new Error();
     }
   };
-  console.log(containers);
-  console.log(containers.filter((e: any) => e.Name[0].includes(search)));
+  // console.log(containers);
+  // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
 
   const displayContainers = containers
     .filter(
@@ -98,23 +98,24 @@ const CardContainer = (): any => {
       );
     });
   return (
-    <div
-      className='containersDiv'
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-      }}>
-      <TextField
-        fullWidth
-        variant='outlined'
-        label='Search by Name or Port'
-        onChange={e => {
-          setSearch(e.target.value);
-        }}></TextField>
-      <br></br>
-      {displayContainers}
-    </div>
+    <>
+      <div
+        className='containersDiv'
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-evenly',
+        }}>
+        <TextField
+          style={{ width: '96%', margin: '5px 0px 10px 0px' }}
+          variant='outlined'
+          label='Search by Name/Port'
+          onChange={e => {
+            setSearch(e.target.value);
+          }}></TextField>
+        {displayContainers}
+      </div>
+    </>
   );
 };
 
