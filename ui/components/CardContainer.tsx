@@ -107,7 +107,7 @@ const CardContainer = (): any => {
           justifyContent: 'space-evenly',
         }}>
         <TextField
-          style={{ width: '96%', margin: '5px 0px 10px 0px' }}
+          style={{ width: '96%', margin: '4px 0px 10px 0px' }}
           variant='outlined'
           label='Search by Name/Port'
           onChange={e => {
