@@ -26,7 +26,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - 42069:42069
+      - 42069:3000
     volumes:
       - shared-grafana-files:/etc/grafana
     environment:
