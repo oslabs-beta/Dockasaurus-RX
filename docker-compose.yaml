@@ -6,6 +6,7 @@ services:
     volumes:
       - /var/run/docker.sock.raw:/var/run/docker.sock
       - shared-prometheus-files:/prometheus
+      - shared-grafana-files:/grafana
     ports:
       - 2424:2424
   prometheus:
@@ -21,7 +22,18 @@ services:
       - prometheusdata:/prometheus
     depends_on:
       - DRX
-
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - 42069:42069
+    volumes:
+      - shared-grafana-files:/etc/grafana
+    environment:
+      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+    depends_on:
+      - prometheus
 volumes:
   prometheusdata:
   shared-prometheus-files:
+  shared-grafana-files:

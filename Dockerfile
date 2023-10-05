@@ -29,7 +29,7 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
 COPY backend ./backend
 COPY prometheus /prometheus
 COPY docker-compose.yaml /
-COPY prometheus /prometheus
+COPY grafana /grafana
 COPY metadata.json /
 COPY package.json .
 COPY docker.svg /
