@@ -9,7 +9,7 @@ export function App() {
   //   try {
   //     const result = await ddClient.extension.vm?.service?.get('/stats');
   //     console.log(result);
-  //     // setContainerStats(result);
+      // setContainerStats(result);
   //     return result;
   //   } catch (err) {
   //     console.log(err);
