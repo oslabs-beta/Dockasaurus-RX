@@ -21,7 +21,19 @@ services:
       - prometheusdata:/prometheus
     depends_on:
       - DRX
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/etc/grafana
+      
 
 volumes:
   prometheusdata:
   shared-prometheus-files:
+  grafana_data:
