@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createDockerDesktopClient } from '@docker/extension-api-client';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from '@mui/material';
 import '../../ui/css/style.css';
 
 const client = createDockerDesktopClient();
@@ -39,9 +45,9 @@ const CardContainer = (): any => {
       throw new Error();
     }
   };
+  // console.log(containers);
+  // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
   console.log(containers);
-  console.log(containers.filter((e: any) => e.Name[0].includes(search)));
-
   const displayContainers = containers
     .filter(
       (e: any) =>
@@ -59,7 +65,10 @@ const CardContainer = (): any => {
               <b>Status:</b> {container.Status}
             </Typography>
             <Typography color='text.secondary'>
-              <b>Port:</b> 8080
+              <b>Port:</b>{' '}
+              {container.Ports.map((e: any) => {
+                return e['PublicPort'];
+              }).toString()}
             </Typography>
             <br />
 
@@ -92,19 +101,24 @@ const CardContainer = (): any => {
       );
     });
   return (
-    <div
-      className='containersDiv'
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-      }}>
-      <input
-        onChange={e => {
-          setSearch(e.target.value);
-        }}></input>
-      {displayContainers}
-    </div>
+    <>
+      <div
+        className='containersDiv'
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-evenly',
+        }}>
+        <TextField
+          style={{ width: '96%', margin: '4px 0px 10px 0px' }}
+          variant='outlined'
+          label='Search by Name/Port'
+          onChange={e => {
+            setSearch(e.target.value);
+          }}></TextField>
+        {displayContainers}
+      </div>
+    </>
   );
 };
 
