@@ -8,6 +8,19 @@ import {
 import { ExpandCircleDown } from '@mui/icons-material';
 import Item from '../components/Item';
 import '../../ui/css/style.css';
+import { PrometheusDriver } from 'prometheus-query';
+
+const prom: any = new PrometheusDriver({
+  endpoint: "https://host.docker.internal:9090"
+})
+
+const getAvgOverTime = async (range: string, vector: string) => {
+  const query = `avg_over_time(${range}[${vector}])`
+  const result = await prom.instantQuery(query);
+  return result;
+};
+console.log('avgOverTime', getAvgOverTime('cpu_usage_percent', '1h:0m'))
+
 
 const Suggestions = () => {
   return (

@@ -1,10 +1,12 @@
 apiVersion: 1
 
 datasources:
-    - name: Grafana
-      type: grafana
+    - name: Prometheus 
+      type: prometheus
       access: proxy
       orgId: 1
       url: http://prometheus:9090
       version: 1
-      editable: false
+      editable: true
+      basicAuth: false
+      isDefault: true
