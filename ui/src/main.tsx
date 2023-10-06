@@ -1,11 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import CssBaseline from "@mui/material/CssBaseline";
-import { DockerMuiThemeProvider } from "@docker/docker-mui-theme";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import CssBaseline from '@mui/material/CssBaseline';
+import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import { App } from './App';
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     {/*
       If you eject from MUI (which we don't recommend!), you should add
@@ -13,8 +14,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       some minimal Docker theming.
     */}
     <DockerMuiThemeProvider>
-      <CssBaseline />
-      <App />
+      <CssBaseline>
+        <App />
+      </CssBaseline>
     </DockerMuiThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -1,3 +1,27 @@
+version: '3.8'
 services:
   DRX:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    container_name: drx
+    volumes:
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+      - shared-prometheus-files:/prometheus
+    ports:
+      - 2424:2424
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - shared-prometheus-files:/etc/prometheus
+      - prometheusdata:/prometheus
+    depends_on:
+      - DRX
+
+volumes:
+  prometheusdata:
+  shared-prometheus-files:

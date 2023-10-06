@@ -1,4 +1,4 @@
-IMAGE?=DRX/DockasaurusRX
+IMAGE?=drx/dockasaurusrx
 TAG?=latest
 
 BUILDER=buildx-multi-arch
@@ -10,10 +10,13 @@ build-extension: ## Build service image to be deployed as a desktop extension
 	docker build --tag=$(IMAGE):$(TAG) .
 
 install-extension: build-extension ## Install the extension
-	docker extension install $(IMAGE):$(TAG)
+	docker extension install $(IMAGE):$(TAG) -f
 
 update-extension: build-extension ## Update the extension
-	docker extension update $(IMAGE):$(TAG)
+	docker extension update $(IMAGE):$(TAG) -f
+
+update-debug-extension: update-extension # Update the extension and put it into debug mode
+	docker extension dev debug $(IMAGE):$(TAG)
 
 prepare-buildx: ## Create buildx builder for multi-arch build, if not exists
 	docker buildx inspect $(BUILDER) || docker buildx create --name=$(BUILDER) --driver=docker-container --driver-opt=network=host

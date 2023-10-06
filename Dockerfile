@@ -1,16 +1,4 @@
-FROM golang:1.19-alpine AS builder
-ENV CGO_ENABLED=0
-WORKDIR /backend
-COPY backend/go.* .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go mod download
-COPY backend/. .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go build -trimpath -ldflags="-s -w" -o bin/service
-
-FROM --platform=$BUILDPLATFORM node:18.12-alpine3.16 AS client-builder
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17 AS client-builder
 WORKDIR /ui
 # cache packages in layer
 COPY ui/package.json /ui/package.json
@@ -20,9 +8,12 @@ RUN --mount=type=cache,target=/usr/src/app/.npm \
     npm ci
 # install
 COPY ui /ui
+RUN npm i
 RUN npm run build
 
-FROM alpine
+FROM node:current-alpine3.17
+
+WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
     org.opencontainers.image.description="Docker Resource Management Extension" \
     org.opencontainers.image.vendor="DockasaurusRX" \
@@ -35,9 +26,16 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     com.docker.extension.categories="" \
     com.docker.extension.changelog=""
 
-COPY --from=builder /backend/bin/service /
-COPY docker-compose.yaml .
-COPY metadata.json .
-COPY docker.svg .
-COPY --from=client-builder /ui/build ui
-CMD /service -socket /run/guest-services/backend.sock
+COPY backend ./backend
+COPY prometheus /prometheus
+COPY docker-compose.yaml /
+COPY prometheus /prometheus
+COPY metadata.json /
+COPY package.json .
+COPY docker.svg /
+COPY tsconfig.json .
+COPY --from=client-builder /ui/build /ui
+RUN npm i
+RUN npm install typescript -g
+RUN tsc
+CMD node ./dist/server.js
