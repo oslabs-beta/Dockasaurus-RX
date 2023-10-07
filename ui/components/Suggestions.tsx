@@ -9,7 +9,7 @@ import { ExpandCircleDown } from '@mui/icons-material';
 import Item from '../components/Item';
 import '../../ui/css/style.css';
 import { PrometheusDriver } from 'prometheus-query';
-
+import '../../backend/server';
 
 
 
@@ -18,7 +18,7 @@ const Suggestions = ({id}: String) => {
     endpoint: "http://localhost:9090"
   });
   
-  const getAvgOverTime = async (id: string) => {
+  const getAvgCPUOverTime = async (id: string) => {
     try {
       const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
       const res = await prom.instantQuery(query);
@@ -28,6 +28,15 @@ const Suggestions = ({id}: String) => {
     }
   };
 
+  const getAvgMEMOverTime = async (id: string) => {
+    try {
+      const query = `avg_over_time(memory_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
+      const res = await prom.instantQuery(query);
+      return res.result[0].value.value.toFixed(3);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 
   return (
