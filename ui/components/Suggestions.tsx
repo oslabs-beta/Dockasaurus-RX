@@ -10,19 +10,26 @@ import Item from '../components/Item';
 import '../../ui/css/style.css';
 import { PrometheusDriver } from 'prometheus-query';
 
-const prom: any = new PrometheusDriver({
-  endpoint: "https://host.docker.internal:9090"
-})
-
-const getAvgOverTime = async (range: string, vector: string) => {
-  const query = `avg_over_time(${range}[${vector}])`
-  const result = await prom.instantQuery(query);
-  return result;
-};
-console.log('avgOverTime', getAvgOverTime('cpu_usage_percent', '1h:0m'))
 
 
-const Suggestions = () => {
+
+const Suggestions = ({id}: String) => {
+  const prom: any = new PrometheusDriver({
+    endpoint: "http://localhost:9090"
+  });
+  
+  const getAvgOverTime = async (id: string) => {
+    try {
+      const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
+      const res = await prom.instantQuery(query);
+      return res.result[0].value.value.toFixed(3);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+
   return (
     <Item>
       <Accordion>
