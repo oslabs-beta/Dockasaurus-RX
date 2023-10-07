@@ -76,6 +76,7 @@ const CardContainer = ({setId}: any): any => {
               variant='text'
               onClick={() => {
                 setId(container.Id)
+                
               }}
               sx={{
                 textTransform: 'uppercase',
