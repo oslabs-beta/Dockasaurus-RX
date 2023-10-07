@@ -9,7 +9,7 @@ export function App() {
   //   try {
   //     const result = await ddClient.extension.vm?.service?.get('/stats');
   //     console.log(result);
-      // setContainerStats(result);
+  // setContainerStats(result);
   //     return result;
   //   } catch (err) {
   //     console.log(err);
@@ -27,7 +27,21 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Item>Dashboard Panel:</Item>
+              <Item>
+                Dashboard Panel:
+                <iframe
+                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=2`}
+                  width='600'
+                  height='300'
+                  style={{ border: 0 }}
+                />
+                <iframe
+                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=1`}
+                  width='600'
+                  height='300'
+                  style={{ border: 0 }}
+                />
+              </Item>
             </Box>
           </Grid>
           <Grid xs={12} md={7}>

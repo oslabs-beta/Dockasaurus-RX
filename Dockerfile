@@ -31,6 +31,7 @@ COPY prometheus /prometheus
 COPY docker-compose.yaml /
 COPY grafana /grafana
 COPY metadata.json /
+COPY dashboards /dashboards
 COPY package.json .
 COPY docker.svg /
 COPY tsconfig.json .
