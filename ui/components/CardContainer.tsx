@@ -15,7 +15,7 @@ function useDockerDesktopClient() {
   return client;
 }
 
-const CardContainer = (): any => {
+const CardContainer = ({setId}: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
@@ -74,7 +74,10 @@ const CardContainer = (): any => {
 
             <Button
               variant='text'
-              onClick={testclick}
+              onClick={() => {
+                setId(container.Id)
+                
+              }}
               sx={{
                 textTransform: 'uppercase',
                 fonSize: '0.95em',

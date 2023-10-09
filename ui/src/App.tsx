@@ -3,19 +3,10 @@ import Box from '@mui/material/Box';
 import CardContainer from '../components/CardContainer';
 import Suggestions from '../components/Suggestions';
 import Item from '../components/Item';
+import { useState } from 'react';
 
 export function App() {
-  // const stats = async () => {
-  //   try {
-  //     const result = await ddClient.extension.vm?.service?.get('/stats');
-  //     console.log(result);
-  // setContainerStats(result);
-  //     return result;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
+  const [id, setId] = useState<String>('');
   return (
     <>
       <Box sx={{ flexGrow: 1, height: '100%' }}>
@@ -51,7 +42,7 @@ export function App() {
                 height: '100%',
               }}>
               <Item>
-                <CardContainer />
+                <CardContainer setId={setId}/>
               </Item>
             </Box>
           </Grid>
@@ -62,7 +53,7 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Suggestions />
+              <Suggestions id={id}/>
             </Box>
           </Grid>
         </Grid>

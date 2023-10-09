@@ -172,7 +172,8 @@ async function getDockerContainerStats(id: String): Promise<Object> {
 
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-
+  // memoryLimitGauge.labels({ container_id: id }).set(available_memory);
+  
   //console.log('Data: ', data);
   // const response = await axios.get<Container[]>('/containers/json', {
   //   socketPath: '/var/run/docker.sock',
@@ -222,16 +223,4 @@ promConnection.get('/metrics', async (req, res) => {
 });
 promConnection.listen(2424);
 
-// import Bun from '@bun/bun';
 
-// const server: Response = Bun.serve({
-//   unix: '/run/guest-services/backend.sock',
-//   fetch(req) {
-//     if (req.url === '/test') {
-//       const message = req.body.message;
-//       return new Response('test from backend!');
-//     } else {
-//       return new Response('Not found', { status: 404 });
-//     }
-//   },
-// });
