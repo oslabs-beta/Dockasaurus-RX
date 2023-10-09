@@ -8,6 +8,7 @@
     "dockerode": "^3.3.5",
     "express": "^4.18.2",
     "prom-client": "^14.2.0",
+    "prometheus-query": "^3.3.2",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
