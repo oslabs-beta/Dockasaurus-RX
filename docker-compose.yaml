@@ -27,7 +27,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - 3000:3000
+      - 40001:3000
     volumes:
       - shared-grafana-files:/etc/grafana
       - grafana-dashboards:/etc/dashboards

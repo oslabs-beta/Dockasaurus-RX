@@ -57,7 +57,6 @@ const StyledMenu = styled((props: MenuProps) => (
 
 type Views = '5m' | '15m' | '30m' | '1hr' | '3hr' | '6hr' | '24h' | '1d';
 
-
 export function App() {
   const [id, setId] = useState<String>('');
   const [containerID, setcontainerID] = useState<string>('');
@@ -93,12 +92,10 @@ export function App() {
               }}>
               <Item>
                 <iframe
-
-                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${view}&to=now&theme=dark&panelId=2`}
+                  src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${view}&to=now&theme=dark&panelId=2`}
                   width='600'
                   height='300'
                   style={{ border: 0 }}
-
                 />
                 <div>
                   <Button
@@ -150,12 +147,10 @@ export function App() {
                   </StyledMenu>
                 </div>
                 <iframe
-
-                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${view}&to=now&theme=dark&panelId=1`}
+                  src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${view}&to=now&theme=dark&panelId=1`}
                   width='600'
                   height='300'
                   style={{ border: 0 }}
-
                 />
               </Item>
             </Box>
@@ -168,7 +163,7 @@ export function App() {
                 height: '100%',
               }}>
               <Item>
-                <CardContainer setId={setId}/>
+                <CardContainer setId={setId} />
               </Item>
             </Box>
           </Grid>
@@ -179,7 +174,7 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Suggestions id={id}/>
+              <Suggestions id={id} />
             </Box>
           </Grid>
         </Grid>
