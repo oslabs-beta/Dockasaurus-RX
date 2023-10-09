@@ -2,7 +2,7 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
-import { cpuUsageGauge, memoryLimitGauge, memoryUsageGauge, registry } from './promClient';
+import { cpuUsageGauge, memoryUsageGauge, registry } from './promClient';
 
 type AxiosInstance = typeof axios;
 
@@ -172,7 +172,7 @@ async function getDockerContainerStats(id: String): Promise<Object> {
 
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-  memoryLimitGauge.labels({ container_id: id }).set(available_memory);
+  // memoryLimitGauge.labels({ container_id: id }).set(available_memory);
   
   //console.log('Data: ', data);
   // const response = await axios.get<Container[]>('/containers/json', {
