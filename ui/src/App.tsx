@@ -67,6 +67,8 @@ export function App() {
   //     console.log(err);
   //   }
   // };
+  const [containerID, setcontainerID] = useState<string>('');
+
   const [view, setView] = useState<Views>('15m');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
