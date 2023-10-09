@@ -150,7 +150,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
     });
     req.end();
   });
-  console.log(data);
   const cpu_stats = data[0].cpu_stats;
   const precpu_stats = data[0].precpu_stats;
   const memory_stats = data[0].memory_stats;
@@ -173,15 +172,12 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
   // memoryLimitGauge.labels({ container_id: id }).set(available_memory);
-  
+
   //console.log('Data: ', data);
   // const response = await axios.get<Container[]>('/containers/json', {
   //   socketPath: '/var/run/docker.sock',
   //   params: { all: true },
   // });
-  console.log('cpu_usage%', cpu_usage_percent);
-  console.log('gauge', cpuUsageGauge);
-  console.log('registry', registry);
   const containers = data;
   // console.log(containers);
   // console.log('containers: ', containers[0].cpu_stats);
@@ -200,11 +196,40 @@ app.listen('/run/guest-services/backend.sock', () => {
 app.get('/test2', async (req, res) => {
   const result = await axios.get('http://localhost:2424/metrics');
   const data = result.data;
-  console.log('data from test2 endpoint', data);
   res.status(200).json(data);
 });
 
 const promConnection = express();
+
+promConnection.post('/api/filtergraph/:id', async (req: any, res: any) => {
+  const { id } = req.params;
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!${id}).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  res.status(200).send();
+});
+
+promConnection.delete('/api/filtergraph/', async (req: any, res: any) => {
+  const { id } = req.params;
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  res.status(200).send();
+});
 
 promConnection.get('/metrics', async (req, res) => {
   // console.log('in metrics endpoint');
@@ -214,7 +239,6 @@ promConnection.get('/metrics', async (req, res) => {
   );
   // console.log('all stats', stats);
   // res.status(200).json(stats);
-  console.log('in metrics endpoint');
   res.set('Content-Type', registry.contentType);
   const data = await registry.metrics();
 
@@ -222,5 +246,3 @@ promConnection.get('/metrics', async (req, res) => {
   res.status(200).send(data);
 });
 promConnection.listen(2424);
-
-
