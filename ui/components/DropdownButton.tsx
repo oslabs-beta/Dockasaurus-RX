@@ -63,7 +63,6 @@ function TimeButton() {
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-    setSelectedView(this.textContent);
   };
 
   const handleClose = () => {
