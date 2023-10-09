@@ -20,13 +20,13 @@ export function App() {
               }}>
               <Item>
                 <iframe
-                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=2`}
+                  src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=2`}
                   // width='600'
                   // height='300'
                   style={{ width: '50%', border: '0' }}
                 />
                 <iframe
-                  src={`http://localhost:42069/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=1`}
+                  src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&from=now-${'15m'}&to=now&theme=dark&panelId=1`}
                   // width='600'
                   // height='300'
                   style={{ width: '50%', border: '0' }}
@@ -42,7 +42,7 @@ export function App() {
                 height: '100%',
               }}>
               <Item>
-                <CardContainer setId={setId}/>
+                <CardContainer setId={setId} />
               </Item>
             </Box>
           </Grid>
@@ -53,7 +53,7 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Suggestions id={id}/>
+              <Suggestions id={id} />
             </Box>
           </Grid>
         </Grid>
