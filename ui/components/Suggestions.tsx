@@ -41,8 +41,8 @@ const Suggestions = ({id}: any) => {
       const value = Number(res.result[0].value.value.toFixed(3));
       if (value >= 80) {
         setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been greater than or equal to 80%. 
-        To optimize your container\'s resources, Dockasaurus RX recommends to create a Docker Swarm. 
-        Docker Swarm offers many features to optimize your container\'s resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
+        To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
+        Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
         For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
       };
       if (value <= 30) {
