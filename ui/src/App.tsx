@@ -55,7 +55,7 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-type Views = '5m' | '15m' | '30m' | '1hr' | '3hr' | '6hr' | '24h' | '1d';
+type Views = '5m' | '15m' | '30m' | '1hr' | '3hr' | '6hr' | '24h' | '1d' | '7d';
 
 export function App() {
   const [id, setId] = useState<String>('');
