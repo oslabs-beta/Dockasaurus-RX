@@ -62,7 +62,7 @@ interface Container {
 }
 
 const app = express();
-
+app.use(express.json());
 try {
   fs.unlinkSync('/run/guest-services/backend.sock');
   console.log('Deleted the UNIX socket file.');
@@ -99,11 +99,9 @@ async function getDockerContainers(): Promise<Container[]> {
   };
   const data = await new Promise<Container[]>((resolve, reject) => {
     const req = http.request(options, res => {
-      //console.log(res);
       let rawData = '';
       res.on('data', chunk => {
         rawData += chunk;
-        //console.log('rawData: ', rawData);
       });
       res.on('end', () => {
         resolve(JSON.parse(rawData));
@@ -111,13 +109,7 @@ async function getDockerContainers(): Promise<Container[]> {
     });
     req.end();
   });
-  //console.log('Data: ', data);
-  // const response = await axios.get<Container[]>('/containers/json', {
-  //   socketPath: '/var/run/docker.sock',
-  //   params: { all: true },
-  // });
   const containers = data;
-
   return containers;
 }
 
@@ -139,7 +131,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   };
   const data = await new Promise<DockerStats[]>((resolve, reject) => {
     const req = http.request(options, res => {
-      //console.log(res);
       let stats: DockerStats[] = [];
       res.on('data', chunk => {
         stats.push(JSON.parse('' + chunk));
@@ -150,7 +141,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
     });
     req.end();
   });
-  console.log(data);
   const cpu_stats = data[0].cpu_stats;
   const precpu_stats = data[0].precpu_stats;
   const memory_stats = data[0].memory_stats;
@@ -181,17 +171,60 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   networkOutGauge.labels({ container_id: id }).set(network_out_bytes)
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-  // memoryLimitGauge.labels({ container_id: id }).set(available_memory);
   pidsGauge.labels({container_id : id}).set(pids);
   const containers = data;
   return containers;
 }
-// getDockerContainers().then(data => {
-//   getDockerContainerStats(data[0].Id).then(data2 => {
-//     console.log('data:', data2);
-//   });
-// });
 
+
+app.post('/api/filtergraph/:id', async (req: any, res: any) => {
+  console.log('hello');
+  const { id } = req.params;
+  console.log(id);
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!${id}).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  await fetch(
+    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Basic ${btoa('admin:admin')}`,
+      }),
+    },
+  );
+  res.status(200).send();
+});
+
+app.delete('/api/filtergraph/', async (req: any, res: any) => {
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  await fetch(
+    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Basic ${btoa('admin:admin')}`,
+      }),
+    },
+  );
+  res.status(200).send();
+});
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
@@ -199,27 +232,18 @@ app.listen('/run/guest-services/backend.sock', () => {
 app.get('/test2', async (req, res) => {
   const result = await axios.get('http://localhost:2424/metrics');
   const data = result.data;
-  console.log('data from test2 endpoint', data);
   res.status(200).json(data);
 });
 
 const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
-  // console.log('in metrics endpoint');
   const containers = await getDockerContainers();
   const stats = await Promise.all(
     containers.map(e => getDockerContainerStats(e.Id)),
   );
-  // console.log('all stats', stats);
-  // res.status(200).json(stats);
-  console.log('in metrics endpoint');
   res.set('Content-Type', registry.contentType);
   const data = await registry.metrics();
-
-  // console.log('data from metrics endpoint', data);
   res.status(200).send(data);
 });
 promConnection.listen(2424);
-
-
