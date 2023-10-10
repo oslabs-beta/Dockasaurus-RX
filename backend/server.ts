@@ -77,7 +77,7 @@ try {
   console.log('Did not need to delete the UNIX socket file.');
 }
 
-app.get('/test', async (req: any, res: any) => {
+app.get('/getContainers', async (req: any, res: any) => {
   try {
     const data = await getDockerContainers();
     const images = [];
@@ -227,6 +227,87 @@ app.delete('/api/filtergraph/', async (req: any, res: any) => {
   );
   res.status(200).send();
 });
+
+app.post('/api/:id/start', async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const status = await postDockerStart(id);
+    res.status(204).send(status);
+  } catch (error: any) {
+    res.status(400).send('Internal Server Error');
+  }
+});
+
+async function postDockerStart(id: String): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const options = {
+      socketPath: '/var/run/docker.sock',
+      method: 'POST',
+      path: `/containers/${id}/start`,
+    };
+
+    const req = http.request(options, res => {
+      let data = '';
+      res.on('data', chunk => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        if (res.statusCode === 204) {
+          resolve('Container started successfully');
+        } else {
+          reject(
+            `Failed to start container. Status code: ${res.statusCode}, Response: ${data}`,
+          );
+        }
+      });
+    });
+    req.on('error', error => {
+      reject(`Request error: ${error.message}`);
+    });
+    req.end();
+  });
+}
+
+app.post('/api/:id/stop', async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const status = await postDockerStop(id);
+    res.status(204).send(status);
+  } catch (error: any) {
+    res.status(400).send('Internal Server Error');
+  }
+});
+
+async function postDockerStop(id: String): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const options = {
+      socketPath: '/var/run/docker.sock',
+      method: 'POST',
+      path: `/containers/${id}/stop`,
+    };
+
+    const req = http.request(options, res => {
+      let data = '';
+      res.on('data', chunk => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        if (res.statusCode === 204) {
+          resolve('Container stopped successfully');
+        } else {
+          reject(
+            `Failed to stop container. Status code: ${res.statusCode}, Response: ${data}`,
+          );
+        }
+      });
+    });
+    req.on('error', error => {
+      reject(`Request error: ${error.message}`);
+    });
+    req.end();
+  });
+}
+
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
@@ -245,4 +326,6 @@ promConnection.get('/metrics', async (req, res) => {
   const data = await registry.metrics();
   res.status(200).send(data);
 });
+
 promConnection.listen(39870);
+
