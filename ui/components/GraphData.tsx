@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, MenuItem, Divider } from '@mui/material';
@@ -20,7 +20,20 @@ const GrafanaData = () => {
     handleViewClick,
     handleClose,
   } = useMenuState();
-
+  const refreshGraphs = () => {
+    (document.getElementById('iframe1') as HTMLImageElement).src = (
+      document.getElementById('iframe1') as HTMLImageElement
+    ).src;
+    (document.getElementById('iframe2') as HTMLImageElement).src = (
+      document.getElementById('iframe2') as HTMLImageElement
+    ).src;
+    setTimeout(() => {
+      refreshGraphs();
+    }, 60000);
+  };
+  useEffect(() => {
+    refreshGraphs();
+  }, []);
   return (
     <>
       <Box
