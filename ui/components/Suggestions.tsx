@@ -20,100 +20,128 @@ interface Container {
 
 const Suggestions = ({id}: any) => {
   const [MEMSuggestion, setMEMSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
+  const [CPUSuggestion, setCPUSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
   const [status, setStatus] = useState<String>('')
   const prom: any = new PrometheusDriver({
     endpoint: "http://localhost:9090"
   });
   
   useEffect(() => {
-    currentStatus();
-  },[]);
-  useEffect(() => {
+    currentStatus(id);
     getAvgMEMOverTime(id);
   },[id])
 
-  const currentStatus = async () => {
+  // const currentStatus = async () => {
+//     try {
+//         const memQuery = `avg_over_time(memory_usage_percent{job="docker_stats"}[7d])`;
+//         const cpuQuery = `avg_over_time(cpu_usage_percent{job="docker_stats"}[7d])`;
+//         const memRes = await prom.instantQuery(memQuery);
+//         const cpuRes = await prom.instantQuery(cpuQuery);
+
+//         const memValues: {
+//           under30: number[];
+//           healthy: number[];
+//           over70: number[];
+//         } = {
+//           under30: [],
+//           healthy: [],
+//           over70: [],
+//         };
+//         memRes.result.forEach((container: Container) => {
+//             if (container.value.value <= 30) {
+//                 memValues.under30.push(container.value.value);
+//             }
+//             if (container.value.value > 30 && container.value.value < 70) {
+//                 memValues.healthy.push(container.value.value);
+//             }
+//             if (container.value.value >= 70) {
+//                 memValues.over70.push(container.value.value);
+//             }
+//         });
+//         const memPercentages = {
+//           under30Percent : memValues.under30.length / memRes.result.length * 100,
+//           healthyPercent : memValues.healthy.length / memRes.result.length * 100,
+//           over70Percent : memValues.over70.length / memRes.result.length * 100
+//         };
+
+//         const cpuValues: {
+//           under30: number[];
+//           healthy: number[];
+//           over70: number[];
+//         } = {
+//           under30: [],
+//           healthy: [],
+//           over70: [],
+//         };
+//         cpuRes.result.forEach((container: Container) => {
+//             if (container.value.value <= 30) {
+//                 cpuValues.under30.push(container.value.value);
+//             }
+//             if (container.value.value > 30 && container.value.value < 70) {
+//                 cpuValues.healthy.push(container.value.value);
+//             }
+//             if (container.value.value >= 70) {
+//                 cpuValues.over70.push(container.value.value);
+//             }
+//         });
+//         const cpuPercentages = {
+//           under30Percent : cpuValues.under30.length / cpuRes.result.length * 100,
+//           healthyPercent : cpuValues.healthy.length / cpuRes.result.length * 100,
+//           over70Percent : cpuValues.over70.length / cpuRes.result.length * 100
+//         }
+        
+        
+//         setStatus(`
+//         Current Status of Memory Usage:
+//         ${Math.round(memPercentages.under30Percent)}% of containers are using under 30% of the memory.
+//         ${Math.round(memPercentages.healthyPercent)}% of containers are healthy.
+//         ${Math.round(memPercentages.over70Percent)}% of containers are using over 70% of the memory.
+        
+//         Current Status of CPU Usage:
+//         ${Math.round(cpuPercentages.under30Percent)}% of containers are using under 30% of the CPU.
+//         ${Math.round(cpuPercentages.healthyPercent)}% of containers are healthy.
+//         ${Math.round(cpuPercentages.over70Percent)}% of containers are using over 70% of the CPU.
+//         `);
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
+  const currentStatus = async (id) => {
     try {
-        const memQuery = `avg_over_time(memory_usage_percent{job="docker_stats"}[7d])`;
-        const cpuQuery = `avg_over_time(cpu_usage_percent{job="docker_stats"}[7d])`;
-        const memRes = await prom.instantQuery(memQuery);
-        const cpuRes = await prom.instantQuery(cpuQuery);
-
-        const memValues: {
-          under30: number[];
-          healthy: number[];
-          over70: number[];
-        } = {
-          under30: [],
-          healthy: [],
-          over70: [],
-        };
-        memRes.result.forEach((container: Container) => {
-            if (container.value.value <= 30) {
-                memValues.under30.push(container.value.value);
-            }
-            if (container.value.value > 30 && container.value.value < 70) {
-                memValues.healthy.push(container.value.value);
-            }
-            if (container.value.value >= 70) {
-                memValues.over70.push(container.value.value);
-            }
-        });
-        const memPercentages = {
-          under30Percent : memValues.under30.length / memRes.result.length * 100,
-          healthyPercent : memValues.healthy.length / memRes.result.length * 100,
-          over70Percent : memValues.over70.length / memRes.result.length * 100
-        };
-
-        const cpuValues: {
-          under30: number[];
-          healthy: number[];
-          over70: number[];
-        } = {
-          under30: [],
-          healthy: [],
-          over70: [],
-        };
-        cpuRes.result.forEach((container: Container) => {
-            if (container.value.value <= 30) {
-                cpuValues.under30.push(container.value.value);
-            }
-            if (container.value.value > 30 && container.value.value < 70) {
-                cpuValues.healthy.push(container.value.value);
-            }
-            if (container.value.value >= 70) {
-                cpuValues.over70.push(container.value.value);
-            }
-        });
-        const cpuPercentages = {
-          under30Percent : cpuValues.under30.length / cpuRes.result.length * 100,
-          healthyPercent : cpuValues.healthy.length / cpuRes.result.length * 100,
-          over70Percent : cpuValues.over70.length / cpuRes.result.length * 100
-        }
-        console.log('under30%', )
-        
-        setStatus(`
-        Current Status of Memory Usage:\n
-        ${Math.round(memPercentages.under30Percent)}% of containers are using under 30% of the memory.\n
-        ${Math.round(memPercentages.healthyPercent)}% of containers are healthy.\n
-        ${Math.round(memPercentages.over70Percent)}% of containers are using over 70% of the memory.\n
-        
-        Current Status of CPU Usage:\n
-        ${Math.round(cpuPercentages.under30Percent)}% of containers are using under 30% of the CPU.\n
-        ${Math.round(cpuPercentages.healthyPercent)}% of containers are healthy.\n
-        ${Math.round(cpuPercentages.over70Percent)}% of containers are using over 70% of the CPU.\n
-        `);
+      const memQuery = `memory_usage_percent{container_id="${id}",job="docker_stats"}`;
+      const cpuQuery = `cpu_usage_percent{container_id="${id}",job="docker_stats"}`;
+      const memRes = await prom.instantQuery(memQuery);
+      const cpuRes = await prom.instantQuery(cpuQuery);
+      const memValue = memRes.result[0].value.value.toFixed(2);
+      const cpuValue = cpuRes.result[0].value.value.toFixed(2);
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
-};
-
+  }
   const getAvgCPUOverTime = async (id: string) => {
     try {
       const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
       const res = await prom.instantQuery(query);
-      const value = res.result[0].value.value.toFixed(3);
-
+      const value = Number(res.result[0].value.value.toFixed(3));
+      if (value >= 70) {
+        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been ${value}%. 
+        To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
+        Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
+        For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
+      };
+      if (value <= 30) {
+        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been less than or equal to 30%.
+        To optimize your container's resources, Dockasaurus RX recommends to lower the memory limit to about 40% of your current limit. 
+        This will allow other containers that need more CPU to perform better.
+        To lower the memory limit for your container, you can run the command "docker run --cpus=(number of bytes here) (image or container ID here)".
+        For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
+      }
+      if (value > 30 && value <= 50) {
+        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been healthy, using between 30% to 50% of your CPU.`);
+      }
+      if (value > 50 && value < 70) {
+        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been slightly higher than normal, using between 50% to 70% of your CPU. CPU Usage may need to be optimized soon.`)
+      }
     } catch (err) {
       console.log(err);
     }
@@ -162,7 +190,7 @@ const Suggestions = ({id}: any) => {
               fontWeight: 'bold',
             }}
             color='text.primary'>
-            Your Container At A Glance
+            Your Containers At A Glance
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
