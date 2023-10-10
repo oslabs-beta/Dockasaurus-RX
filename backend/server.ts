@@ -278,10 +278,10 @@ async function postDockerStart(id: String): Promise<string> {
   });
 }
 
-app.post('/api/:id/start', async (req: any, res: any) => {
+app.post('/api/:id/stop', async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const status = await postDockerStart(id); 
+    const status = await postDockerStop(id);
     res.status(204).send(status);
   } catch (error: any) {
     res.status(400).send('Internal Server Error');
