@@ -12,12 +12,6 @@ export const memoryUsageGauge = new promClient.Gauge({
     labelNames: ['container_id'],
 });
 
-// export const memoryLimitGauge = new promClient.Gauge({
-//     name: 'memory_limit',
-//     help: 'memory_limit',
-//     labelNames: ['container_id'],
-// });
-
 export const networkInGauge = new promClient.Gauge({
     name: 'network_in_bytes',
     help: 'network_in_bytes',
@@ -41,4 +35,4 @@ registry.registerMetric(memoryUsageGauge);
 registry.registerMetric(networkInGauge);
 registry.registerMetric(networkOutGauge);
 registry.registerMetric(pidsGauge);
-// registry.registerMetric(memoryLimitGauge);
+
