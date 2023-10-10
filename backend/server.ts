@@ -62,7 +62,7 @@ interface Container {
 }
 
 const app = express();
-
+app.use(express.json());
 try {
   fs.unlinkSync('/run/guest-services/backend.sock');
   console.log('Deleted the UNIX socket file.');
@@ -189,6 +189,54 @@ async function getDockerContainerStats(id: String): Promise<Object> {
 //   });
 // });
 
+app.post('/api/filtergraph/:id', async (req: any, res: any) => {
+  console.log('hello');
+  const { id } = req.params;
+  console.log(id);
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!${id}).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  await fetch(
+    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Basic ${btoa('admin:admin')}`,
+      }),
+    },
+  );
+  res.status(200).send();
+});
+
+app.delete('/api/filtergraph/', async (req: any, res: any) => {
+  const dashboard: any = JSON.parse(
+    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
+  );
+  dashboard.panels.forEach((element: any) => {
+    element.fieldConfig.overrides[0].matcher.options = `/^((?!).)*$/`;
+  });
+  fs.writeFileSync(
+    '/dashboards/container-metrics/dashboard.json',
+    JSON.stringify(dashboard),
+  );
+  await fetch(
+    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Basic ${btoa('admin:admin')}`,
+      }),
+    },
+  );
+  res.status(200).send();
+});
 app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
@@ -200,36 +248,6 @@ app.get('/test2', async (req, res) => {
 });
 
 const promConnection = express();
-
-promConnection.post('/api/filtergraph/:id', async (req: any, res: any) => {
-  const { id } = req.params;
-  const dashboard: any = JSON.parse(
-    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
-  );
-  dashboard.panels.forEach((element: any) => {
-    element.fieldConfig.overrides[0].matcher.options = `/^((?!${id}).)*$/`;
-  });
-  fs.writeFileSync(
-    '/dashboards/container-metrics/dashboard.json',
-    JSON.stringify(dashboard),
-  );
-  res.status(200).send();
-});
-
-promConnection.delete('/api/filtergraph/', async (req: any, res: any) => {
-  const { id } = req.params;
-  const dashboard: any = JSON.parse(
-    fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
-  );
-  dashboard.panels.forEach((element: any) => {
-    element.fieldConfig.overrides[0].matcher.options = `/^((?!).)*$/`;
-  });
-  fs.writeFileSync(
-    '/dashboards/container-metrics/dashboard.json',
-    JSON.stringify(dashboard),
-  );
-  res.status(200).send();
-});
 
 promConnection.get('/metrics', async (req, res) => {
   // console.log('in metrics endpoint');

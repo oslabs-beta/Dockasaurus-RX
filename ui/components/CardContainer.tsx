@@ -15,7 +15,7 @@ function useDockerDesktopClient() {
   return client;
 }
 
-const CardContainer = ({setId}: any): any => {
+const CardContainer = ({ setId }: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
@@ -74,9 +74,19 @@ const CardContainer = ({setId}: any): any => {
 
             <Button
               variant='text'
-              onClick={() => {
-                setId(container.Id)
-                
+              onClick={async () => {
+                await ddClient.extension.vm?.service?.post(
+                  `/api/filtergraph/${container.Id}`,
+                  JSON.stringify({}),
+                );
+                (document.getElementById('iframe1') as HTMLImageElement).src = (
+                  document.getElementById('iframe1') as HTMLImageElement
+                ).src;
+                (document.getElementById('iframe2') as HTMLImageElement).src = (
+                  document.getElementById('iframe2') as HTMLImageElement
+                ).src;
+
+                setId(container.Id);
               }}
               sx={{
                 textTransform: 'uppercase',
