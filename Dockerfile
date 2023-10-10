@@ -19,12 +19,13 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     org.opencontainers.image.vendor="DockasaurusRX" \
     com.docker.desktop.extension.api.version="0.3.4" \
     com.docker.extension.screenshots="" \
-    com.docker.desktop.extension.icon="" \
-    com.docker.extension.detailed-description="" \
+    #will need to change icon path to MAIN before launching
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/Dockasaurus.png" \ 
+    com.docker.extension.detailed-description="Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions for their Docker Containers." \
     com.docker.extension.publisher-url="" \
     com.docker.extension.additional-urls="" \
-    com.docker.extension.categories="" \
-    com.docker.extension.changelog=""
+    com.docker.extension.categories="utility-tools" \
+    com.docker.extension.changelog="<p>Extension changelog<ul><li>Dockasaurus RX Launches!</li></ul></p>"
 
 COPY backend ./backend
 COPY prometheus /prometheus
