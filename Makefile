@@ -1,5 +1,5 @@
 IMAGE?=drx/dockasaurusrx
-TAG?=1.0
+TAG?=1.0.0
 
 BUILDER=buildx-multi-arch
 
