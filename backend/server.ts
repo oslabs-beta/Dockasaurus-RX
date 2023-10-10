@@ -67,7 +67,7 @@ interface Container {
   Ports: string[];
   Names: string[];
 }
-
+const openStreams = new Set();
 const app = express();
 app.use(express.json());
 try {
@@ -120,73 +120,63 @@ async function getDockerContainers(): Promise<Container[]> {
   return containers;
 }
 
-app.get('/api/stats/:id', async (req: any, res: any) => {
-  try {
-    const { id } = req.params;
-    const data = await getDockerContainerStats(id);
-    res.json(data);
-  } catch (error: any) {
-    res.status(400).send(error.message);
-  }
-});
-
-async function getDockerContainerStats(id: String): Promise<Object> {
+function openStatsStream(id: String) {
   const options = {
     socketPath: '/var/run/docker.sock',
     method: 'GET',
-    path: `/containers/${id}/stats?stream=false`,
+    path: `/containers/${id}/stats`,
   };
-  const data = await new Promise<DockerStats[]>((resolve, reject) => {
-    const req = http.request(options, res => {
-      let stats: DockerStats[] = [];
-      res.on('data', chunk => {
-        stats.push(JSON.parse('' + chunk));
-      });
-      res.on('end', () => {
-        resolve(stats);
-      });
+  const req = http.request(options, res => {
+    res.on('data', chunk => {
+      let stats: DockerStats = JSON.parse('' + chunk);
+      console.log('streaming:', id);
+      const cpu_stats = stats.cpu_stats;
+      const precpu_stats = stats.precpu_stats;
+      const memory_stats = stats.memory_stats;
+      const networks = stats.networks;
+      const pids = stats.pids_stats.current || 0;
+      //calculate cpu usage %
+      const cpu_delta =
+        cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage;
+      const system_cpu_delta =
+        cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage;
+      const number_cpus = cpu_stats.online_cpus;
+      const cpu_usage_percent =
+        (cpu_delta / system_cpu_delta) * number_cpus * 100.0;
+
+      //calculate memory usage %
+      const used_memory = memory_stats.usage - (memory_stats.stats?.cache || 0);
+      const available_memory = memory_stats.limit;
+      const memory_usage_percent = (used_memory / available_memory) * 100.0;
+
+      //networks
+      const totalNetworks = Object.values(networks || {}) as {
+        rx_bytes?: number;
+        tx_bytes?: number;
+      }[];
+      const network_in_bytes = totalNetworks.reduce(
+        (sum, network) => sum + (network.rx_bytes || 0),
+        0,
+      );
+      const network_out_bytes = totalNetworks.reduce(
+        (sum, network) => sum + (network.tx_bytes || 0),
+        0,
+      );
+      networkInGauge.labels({ container_id: id }).set(network_in_bytes);
+      networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
+      if (cpu_usage_percent) {
+        cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
+      }
+      memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
+      pidsGauge.labels({ container_id: id }).set(pids);
     });
-    req.end();
+    res.on('end', () => {
+      console.log('stats stream ended:', id);
+      openStreams.delete(id);
+    });
   });
-  const cpu_stats = data[0].cpu_stats;
-  const precpu_stats = data[0].precpu_stats;
-  const memory_stats = data[0].memory_stats;
-  const networks = data[0].networks;
-  const pids = data[0].pids_stats.current || 0;
-  //calculate cpu usage %
-  const cpu_delta =
-    cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage;
-  const system_cpu_delta =
-    cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage;
-  const number_cpus = cpu_stats.online_cpus;
-  const cpu_usage_percent =
-    (cpu_delta / system_cpu_delta) * number_cpus * 100.0;
-
-  //calculate memory usage %
-  const used_memory = memory_stats.usage - (memory_stats.stats?.cache || 0);
-  const available_memory = memory_stats.limit;
-  const memory_usage_percent = (used_memory / available_memory) * 100.0;
-
-  //networks
-  const totalNetworks = Object.values(networks || {}) as {
-    rx_bytes?: number;
-    tx_bytes?: number;
-  }[];
-  const network_in_bytes = totalNetworks.reduce(
-    (sum, network) => sum + (network.rx_bytes || 0),
-    0,
-  );
-  const network_out_bytes = totalNetworks.reduce(
-    (sum, network) => sum + (network.tx_bytes || 0),
-    0,
-  );
-  networkInGauge.labels({ container_id: id }).set(network_in_bytes);
-  networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
-  cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
-  memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-  pidsGauge.labels({ container_id: id }).set(pids);
-  const containers = data;
-  return containers;
+  req.end();
+  openStreams.add(id);
 }
 
 app.post('/api/filtergraph/:id', async (req: any, res: any) => {
@@ -245,9 +235,12 @@ const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
   const containers = await getDockerContainers();
-  const stats = await Promise.all(
-    containers.map(e => getDockerContainerStats(e.Id)),
-  );
+  containers.forEach(c => {
+    if (!openStreams.has(c.Id)) {
+      openStatsStream(c.Id);
+    }
+  });
+  console.log(openStreams.entries());
   res.set('Content-Type', registry.contentType);
   const data = await registry.metrics();
   res.status(200).send(data);

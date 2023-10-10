@@ -1,6 +1,6 @@
 scrape_configs:
   - job_name: docker_stats
-    scrape_interval: 2s
+    scrape_interval: 1s
     metrics_path: '/metrics'
     static_configs:
       - targets: ['host.docker.internal:39870']

@@ -64,7 +64,9 @@ const Suggestions = ({ id }: any) => {
   const getAvgCPUOverTime = async (id: string) => {
     try {
       const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
+
       const res = await prom.instantQuery(query);
+      console.log(res);
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
         setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been been greater than or equal to 70%, averaging at ${value}%. 
@@ -98,6 +100,7 @@ const Suggestions = ({ id }: any) => {
     try {
       const query = `avg_over_time(memory_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
       const res = await prom.instantQuery(query);
+
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
         setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been greater than or equal to 70%, averaging at ${value}%. 
