@@ -2,10 +2,22 @@
   margin: 7px;
   padding: 10px 7px 0px 10px;
   width: 46%;
+  height: 100%;
 }
 
 @media (max-width: 725px) {
   .card {
+    min-width: 100%;
+  }
+}
+
+.framed {
+  width: 49%;
+  border: 0px;
+}
+
+@media (max-width: 725px) {
+  .framed {
     min-width: 100%;
   }
 }
