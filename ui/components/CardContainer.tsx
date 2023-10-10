@@ -19,18 +19,14 @@ const CardContainer = ({ setId }: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
-  console.log(search);
-  const testclick = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/test2');
-    console.log(result);
-  };
+ 
   useEffect(() => {
-    sendMessageToTextBox();
+    getListOfContainers();
   }, []);
 
-  const sendMessageToTextBox = async (): Promise<void> => {
+  const getListOfContainers = async (): Promise<void> => {
     try {
-      let results = await ddClient.extension.vm?.service?.get('/test');
+      let results = await ddClient.extension.vm?.service?.get('/getContainers');
       if (results === null) throw new Error();
 
       if (
