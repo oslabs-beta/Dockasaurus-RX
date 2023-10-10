@@ -2,7 +2,14 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
-import { cpuUsageGauge, memoryUsageGauge, registry } from './promClient';
+import {
+  cpuUsageGauge,
+  memoryUsageGauge,
+  networkInGauge,
+  networkOutGauge,
+  pidsGauge,
+  registry,
+} from './promClient';
 
 type AxiosInstance = typeof axios;
 
@@ -99,11 +106,9 @@ async function getDockerContainers(): Promise<Container[]> {
   };
   const data = await new Promise<Container[]>((resolve, reject) => {
     const req = http.request(options, res => {
-      //console.log(res);
       let rawData = '';
       res.on('data', chunk => {
         rawData += chunk;
-        //console.log('rawData: ', rawData);
       });
       res.on('end', () => {
         resolve(JSON.parse(rawData));
@@ -111,13 +116,7 @@ async function getDockerContainers(): Promise<Container[]> {
     });
     req.end();
   });
-  //console.log('Data: ', data);
-  // const response = await axios.get<Container[]>('/containers/json', {
-  //   socketPath: '/var/run/docker.sock',
-  //   params: { all: true },
-  // });
   const containers = data;
-
   return containers;
 }
 
@@ -139,7 +138,6 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   };
   const data = await new Promise<DockerStats[]>((resolve, reject) => {
     const req = http.request(options, res => {
-      //console.log(res);
       let stats: DockerStats[] = [];
       res.on('data', chunk => {
         stats.push(JSON.parse('' + chunk));
@@ -154,7 +152,7 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   const precpu_stats = data[0].precpu_stats;
   const memory_stats = data[0].memory_stats;
   const networks = data[0].networks;
-
+  const pids = data[0].pids_stats.current || 0;
   //calculate cpu usage %
   const cpu_delta =
     cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage;
@@ -169,25 +167,27 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   const available_memory = memory_stats.limit;
   const memory_usage_percent = (used_memory / available_memory) * 100.0;
 
+  //networks
+  const totalNetworks = Object.values(networks || {}) as {
+    rx_bytes?: number;
+    tx_bytes?: number;
+  }[];
+  const network_in_bytes = totalNetworks.reduce(
+    (sum, network) => sum + (network.rx_bytes || 0),
+    0,
+  );
+  const network_out_bytes = totalNetworks.reduce(
+    (sum, network) => sum + (network.tx_bytes || 0),
+    0,
+  );
+  networkInGauge.labels({ container_id: id }).set(network_in_bytes);
+  networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-  // memoryLimitGauge.labels({ container_id: id }).set(available_memory);
-
-  //console.log('Data: ', data);
-  // const response = await axios.get<Container[]>('/containers/json', {
-  //   socketPath: '/var/run/docker.sock',
-  //   params: { all: true },
-  // });
+  pidsGauge.labels({ container_id: id }).set(pids);
   const containers = data;
-  // console.log(containers);
-  // console.log('containers: ', containers[0].cpu_stats);
   return containers;
 }
-// getDockerContainers().then(data => {
-//   getDockerContainerStats(data[0].Id).then(data2 => {
-//     console.log('data:', data2);
-//   });
-// });
 
 app.post('/api/filtergraph/:id', async (req: any, res: any) => {
   console.log('hello');
@@ -204,7 +204,7 @@ app.post('/api/filtergraph/:id', async (req: any, res: any) => {
     JSON.stringify(dashboard),
   );
   await fetch(
-    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    'http://host.docker.internal:39872/api/admin/provisioning/dashboards/reload',
     {
       method: 'POST',
       headers: new Headers({
@@ -227,7 +227,7 @@ app.delete('/api/filtergraph/', async (req: any, res: any) => {
     JSON.stringify(dashboard),
   );
   await fetch(
-    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    'http://host.docker.internal:39872/api/admin/provisioning/dashboards/reload',
     {
       method: 'POST',
       headers: new Headers({
@@ -322,27 +322,17 @@ app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
 
-app.get('/test2', async (req, res) => {
-  const result = await axios.get('http://localhost:2424/metrics');
-  const data = result.data;
-  res.status(200).json(data);
-});
-
 const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
-  // console.log('in metrics endpoint');
   const containers = await getDockerContainers();
   const stats = await Promise.all(
     containers.map(e => getDockerContainerStats(e.Id)),
   );
-  // console.log('all stats', stats);
-  // res.status(200).json(stats);
   res.set('Content-Type', registry.contentType);
   const data = await registry.metrics();
-
-  // console.log('data from metrics endpoint', data);
   res.status(200).send(data);
 });
 
-promConnection.listen(2424);
+promConnection.listen(39870);
+

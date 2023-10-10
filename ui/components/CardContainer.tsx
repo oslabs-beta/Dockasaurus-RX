@@ -45,14 +45,14 @@ const CardContainer = ({ setId }: any): any => {
       throw new Error();
     }
   };
-  // console.log(containers);
-  // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
-  console.log(containers);
+
   const displayContainers = containers
     .filter(
       (e: any) =>
         e.Name[0].includes(search) ||
-        e.Ports.map((p: any) => p.PublicPort).includes(Number(search)),
+        e.Ports.map((p: any) =>
+          p.PublicPort.toString().includes(search),
+        ).includes(true),
     )
     .map((container: any) => {
       return (
