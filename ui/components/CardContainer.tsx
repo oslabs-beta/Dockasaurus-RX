@@ -95,7 +95,7 @@ const CardContainer = ({ setId }: any): any => {
             </Button>
             <Button
               variant='text'
-              onClick={testclick}
+              // onClick={}
               sx={{
                 textTransform: 'uppercase',
                 fonSize: '0.95em',
