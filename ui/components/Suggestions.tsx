@@ -21,7 +21,7 @@ interface Container {
 const Suggestions = ({id}: any) => {
   const [MEMSuggestion, setMEMSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
   const [CPUSuggestion, setCPUSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
-  const [status, setStatus] = useState<String>('')
+  const [status, setStatus] = useState<String>('Please select a container to view your container at a glance.')
   const prom: any = new PrometheusDriver({
     endpoint: "http://localhost:9090"
   });
