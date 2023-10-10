@@ -11,7 +11,7 @@ COPY ui /ui
 RUN npm i
 RUN npm run build
 
-FROM node:current-alpine3.17
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17
 
 WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
