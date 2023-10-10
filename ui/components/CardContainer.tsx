@@ -45,9 +45,8 @@ const CardContainer = ({ setId }: any): any => {
       throw new Error();
     }
   };
-  // console.log(containers);
-  // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
-  console.log(containers);
+
+
   const displayContainers = containers
     .filter(
       (e: any) =>
