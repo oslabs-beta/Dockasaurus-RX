@@ -30,7 +30,7 @@ Dockasaurus RX diagnoses resource consumption and prescribes optimization to emp
 
 ## About 💡
 
-A nimble and easy-to-use DevOps container tool, Dockasaurus RX has a major trick up its sleeve beyond mere monitoring and visualization. It's more than a pulse check. To keep your applications happy and healthy, Dockasaurus RX retains important vitals of all your containers for ______ allowing comparisons to be drawn regarding the well-being of concurrent container workloads over a designated period.
+A nimble and easy-to-use DevOps container tool, Dockasaurus RX has a major trick up its sleeve beyond mere monitoring and visualization. It's more than a pulse check. To keep your applications happy and healthy, Dockasaurus RX retains important vitals of all your containers for 7 days allowing comparisons to be drawn regarding the well-being of concurrent container workloads over a designated period.
 
 
 
@@ -43,7 +43,7 @@ A nimble and easy-to-use DevOps container tool, Dockasaurus RX has a major trick
 
 The extension is divided into a minimal yet feature-rich 3 panel dashboard, designed to be uncluttered, collapsible, and viewport adaptive to your DevOps needs.
 
-- 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and ____________ in 2 Grafana iframes.
+- 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and Memory Usage Percent in 2 Grafana iframes.
 
         **INSERT VISUALIZATION DEMO GIF HERE**
 
@@ -64,12 +64,10 @@ The extension is divided into a minimal yet feature-rich 3 panel dashboard, desi
 
 ## Under the hood 🩻
 
-The Dockasaurus RX Docker Desktop extension is a frontend **React** application built with the MUI Component Library and leverages the following technologies to benefit users:
--  **React** 
+The Dockasaurus RX Docker Desktop extension is a frontend **React** application built with the MUI Component Library and leverages the following additonal technologies to benefit users:
 -  **Node.js**
--  **Bun.js** 
--  **Prometheus** establishes a robust data pipeline for gathering and storing Docker Engine metrics, ensuring accuracy and space efficiency. DRX's Optimization Suggestions algorithms are written with data scraped by Prometheus.
--  **Grafana** seamlessly extracts and visualizes Docker Engine metrics to provide the frontend with interactive charts and graphs for comprehensive container performance monitoring.
+-  **Prometheus** establishes a robust data pipeline for gathering and storing Docker Engine metrics, ensuring accuracy and space efficiency. DRX's Optimization Suggestions rule-based algorithms are written with data scraped by Prometheus.
+-  **Grafana** seamlessly extracts and visualizes Docker container metrics to provide the frontend with interactive charts and graphs for comprehensive container performance monitoring.
 
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
@@ -97,20 +95,14 @@ The Dockasaurus RX Docker Desktop extension is a frontend **React** application 
 
 
 ## Development Roadmap 🚧
+
+- [X] Add 'At A Glance' Comparison to Optimization Panel
 - [X] Add CPU usage Grafana Visualization
-
 - [X] Add Optimization Algorithm
-
 - [ ] Add Unit Testing
-
 - [ ] Add CPU Usage Alerts
-
 - [ ] Add Snapshot CRUD Functionality
-
-- [ ] Add 'At A Glance' Comparison to Accordion
-
-- [ ] Add Optimization Chart to Accordion
-
+- [ ] Add Optimization Chart to Optimizaton Panel
 - [ ] Multi-language Support
     - [ ] Chinese
     - [ ] Spanish

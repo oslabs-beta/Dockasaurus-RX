@@ -123,7 +123,7 @@ const CardContainer = ({ setId }: any): any => {
           justifyContent: 'space-evenly',
         }}>
         <TextField
-          style={{ width: '96%', margin: '4px 0px 10px 0px' }}
+          style={{ width: '98%', margin: '0px 0px 5px 0px' }}
           variant='outlined'
           label='Search by Name/Port'
           onChange={e => {
