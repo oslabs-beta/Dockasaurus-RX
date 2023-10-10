@@ -9,14 +9,14 @@ services:
       - shared-grafana-files:/grafana
       - grafana-dashboards:/dashboards
     ports:
-      - 2424:2424
+      - 39870:39870
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
-      - 9090:9090
+      - 39871:9090
     restart: unless-stopped
     volumes:
       - shared-prometheus-files:/etc/prometheus
@@ -27,7 +27,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - 40001:3000
+      - 39872:3000
     volumes:
       - shared-grafana-files:/etc/grafana
       - grafana-dashboards:/etc/dashboards

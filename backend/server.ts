@@ -2,7 +2,14 @@ import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import http from 'node:http';
-import { cpuUsageGauge, memoryUsageGauge, networkInGauge, networkOutGauge, pidsGauge, registry } from './promClient';
+import {
+  cpuUsageGauge,
+  memoryUsageGauge,
+  networkInGauge,
+  networkOutGauge,
+  pidsGauge,
+  registry,
+} from './promClient';
 
 type AxiosInstance = typeof axios;
 
@@ -154,7 +161,7 @@ async function getDockerContainerStats(id: String): Promise<Object> {
   const number_cpus = cpu_stats.online_cpus;
   const cpu_usage_percent =
     (cpu_delta / system_cpu_delta) * number_cpus * 100.0;
-  
+
   //calculate memory usage %
   const used_memory = memory_stats.usage - (memory_stats.stats?.cache || 0);
   const available_memory = memory_stats.limit;
@@ -165,17 +172,22 @@ async function getDockerContainerStats(id: String): Promise<Object> {
     rx_bytes?: number;
     tx_bytes?: number;
   }[];
-  const network_in_bytes = totalNetworks.reduce((sum, network) => sum + (network.rx_bytes || 0), 0);
-  const network_out_bytes = totalNetworks.reduce((sum, network) => sum + (network.tx_bytes || 0), 0);
-  networkInGauge.labels({ container_id: id}).set(network_in_bytes);
-  networkOutGauge.labels({ container_id: id }).set(network_out_bytes)
+  const network_in_bytes = totalNetworks.reduce(
+    (sum, network) => sum + (network.rx_bytes || 0),
+    0,
+  );
+  const network_out_bytes = totalNetworks.reduce(
+    (sum, network) => sum + (network.tx_bytes || 0),
+    0,
+  );
+  networkInGauge.labels({ container_id: id }).set(network_in_bytes);
+  networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
   cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
   memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-  pidsGauge.labels({container_id : id}).set(pids);
+  pidsGauge.labels({ container_id: id }).set(pids);
   const containers = data;
   return containers;
 }
-
 
 app.post('/api/filtergraph/:id', async (req: any, res: any) => {
   console.log('hello');
@@ -192,7 +204,7 @@ app.post('/api/filtergraph/:id', async (req: any, res: any) => {
     JSON.stringify(dashboard),
   );
   await fetch(
-    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    'http://host.docker.internal:39872/api/admin/provisioning/dashboards/reload',
     {
       method: 'POST',
       headers: new Headers({
@@ -215,7 +227,7 @@ app.delete('/api/filtergraph/', async (req: any, res: any) => {
     JSON.stringify(dashboard),
   );
   await fetch(
-    'http://host.docker.internal:40001/api/admin/provisioning/dashboards/reload',
+    'http://host.docker.internal:39872/api/admin/provisioning/dashboards/reload',
     {
       method: 'POST',
       headers: new Headers({
@@ -229,12 +241,6 @@ app.listen('/run/guest-services/backend.sock', () => {
   console.log(`🚀 Server listening on ${'/run/guest-services/backend.sock'}`);
 });
 
-app.get('/test2', async (req, res) => {
-  const result = await axios.get('http://localhost:2424/metrics');
-  const data = result.data;
-  res.status(200).json(data);
-});
-
 const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
@@ -246,4 +252,4 @@ promConnection.get('/metrics', async (req, res) => {
   const data = await registry.metrics();
   res.status(200).send(data);
 });
-promConnection.listen(2424);
+promConnection.listen(39870);

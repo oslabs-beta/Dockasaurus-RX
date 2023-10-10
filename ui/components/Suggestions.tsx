@@ -17,21 +17,25 @@ interface Container {
   };
 }
 
-
-const Suggestions = ({id}: any) => {
-  const [MEMSuggestion, setMEMSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
-  const [CPUSuggestion, setCPUSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
-  const [status, setStatus] = useState<String>('Please select a container to view your container at a glance.')
+const Suggestions = ({ id }: any) => {
+  const [MEMSuggestion, setMEMSuggestion] = useState<String>(
+    'Please select a container to view optimization suggestions.',
+  );
+  const [CPUSuggestion, setCPUSuggestion] = useState<String>(
+    'Please select a container to view optimization suggestions.',
+  );
+  const [status, setStatus] = useState<String>(
+    'Please select a container to view your container at a glance.',
+  );
   const prom: any = new PrometheusDriver({
-    endpoint: "http://localhost:9090"
+    endpoint: 'http://localhost:39871',
   });
-  
+
   useEffect(() => {
     currentStatus(id);
     getAvgMEMOverTime(id);
     getAvgCPUOverTime(id);
-  },[id])
-
+  }, [id]);
 
   const currentStatus = async (id: string) => {
     try {
@@ -50,14 +54,16 @@ const Suggestions = ({id}: any) => {
       const networkInVal = networkInRes.result[0].value.value;
       const networkOutVal = networkOutRes.result[0].value.value;
       const pidsVal = pidsRes.result[0].value.value;
-      setStatus(`Memory Usage %: ${memValue}%  CPU Usage %: ${cpuValue}%  Network I/O: ${networkInVal}/${networkOutVal}  PIDS: ${pidsVal}`);
+      setStatus(
+        `Memory Usage %: ${memValue}%  CPU Usage %: ${cpuValue}%  Network I/O: ${networkInVal}/${networkOutVal}  PIDS: ${pidsVal}`,
+      );
     } catch (err) {
       console.log(err);
     }
-  }
+  };
   const getAvgCPUOverTime = async (id: string) => {
     try {
-      const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
+      const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
       const res = await prom.instantQuery(query);
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
@@ -65,7 +71,7 @@ const Suggestions = ({id}: any) => {
         To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
         Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
         For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
-      };
+      }
       if (value <= 30) {
         setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been less than or equal to 30%, averaging at ${value}%.
         To optimize your container's resources, Dockasaurus RX recommends to lower the CPU limit to about 40% of your current limit. 
@@ -74,10 +80,14 @@ const Suggestions = ({id}: any) => {
         For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
       }
       if (value > 30 && value <= 50) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been healthy, using between 30% to 50% of your CPU, averaging at ${value}%.`);
+        setCPUSuggestion(
+          `For the past 7 days, your CPU Usage Percent has been healthy, using between 30% to 50% of your CPU, averaging at ${value}%.`,
+        );
       }
       if (value > 50 && value < 70) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been slightly higher than normal, using between 50% to 70% of your CPU, averaging at ${value}%. CPU Usage may need to be optimized soon.`)
+        setCPUSuggestion(
+          `For the past 7 days, your CPU Usage Percent has been slightly higher than normal, using between 50% to 70% of your CPU, averaging at ${value}%. CPU Usage may need to be optimized soon.`,
+        );
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +104,7 @@ const Suggestions = ({id}: any) => {
         To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
         Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
         For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
-      };
+      }
       if (value <= 30) {
         setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been less than or equal to 30%, averaging at ${value}%.
         To optimize your container's resources, Dockasaurus RX recommends to lower the memory limit to about 40% of your current limit. 
@@ -103,10 +113,14 @@ const Suggestions = ({id}: any) => {
         For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
       }
       if (value > 30 && value <= 50) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been healthy, using between 30% to 50% of your memory, averaging at ${value}%.`);
+        setMEMSuggestion(
+          `For the past 7 days, your Memory Usage Percent has been healthy, using between 30% to 50% of your memory, averaging at ${value}%.`,
+        );
       }
       if (value > 50 && value < 70) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been slightly higher than normal, using between 50% to 70% of your memory, averaging at ${value}%. Memory Usage may need to be optimized soon.`)
+        setMEMSuggestion(
+          `For the past 7 days, your Memory Usage Percent has been slightly higher than normal, using between 50% to 70% of your memory, averaging at ${value}%. Memory Usage may need to be optimized soon.`,
+        );
       }
     } catch (err) {
       console.log(err);
