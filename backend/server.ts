@@ -130,6 +130,7 @@ function openStatsStream(id: String) {
     res.on('data', chunk => {
       let stats: DockerStats = JSON.parse('' + chunk);
       console.log('streaming:', id);
+      console.log(stats);
       const cpu_stats = stats.cpu_stats;
       const precpu_stats = stats.precpu_stats;
       const memory_stats = stats.memory_stats;
@@ -141,7 +142,7 @@ function openStatsStream(id: String) {
       const system_cpu_delta =
         cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage;
       const number_cpus = cpu_stats.online_cpus;
-      const cpu_usage_percent =
+      let cpu_usage_percent =
         (cpu_delta / system_cpu_delta) * number_cpus * 100.0;
 
       //calculate memory usage %
@@ -162,13 +163,13 @@ function openStatsStream(id: String) {
         (sum, network) => sum + (network.tx_bytes || 0),
         0,
       );
-      networkInGauge.labels({ container_id: id }).set(network_in_bytes);
-      networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
-      if (cpu_usage_percent) {
+      if (memory_usage_percent >= 0 && cpu_usage_percent >= 0) {
+        networkInGauge.labels({ container_id: id }).set(network_in_bytes);
+        networkOutGauge.labels({ container_id: id }).set(network_out_bytes);
         cpuUsageGauge.labels({ container_id: id }).set(cpu_usage_percent);
+        memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
+        pidsGauge.labels({ container_id: id }).set(pids);
       }
-      memoryUsageGauge.labels({ container_id: id }).set(memory_usage_percent);
-      pidsGauge.labels({ container_id: id }).set(pids);
     });
     res.on('end', () => {
       console.log('stats stream ended:', id);
@@ -316,6 +317,7 @@ const promConnection = express();
 
 promConnection.get('/metrics', async (req, res) => {
   const containers = await getDockerContainers();
+
   containers.forEach(c => {
     if (!openStreams.has(c.Id)) {
       openStatsStream(c.Id);
@@ -324,8 +326,8 @@ promConnection.get('/metrics', async (req, res) => {
   console.log(openStreams.entries());
   res.set('Content-Type', registry.contentType);
   const data = await registry.metrics();
+  registry.resetMetrics();
   res.status(200).send(data);
 });
 
 promConnection.listen(39870);
-

@@ -19,10 +19,16 @@ const CardContainer = ({ setId }: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
- 
+  const [update, setUpdate] = useState<boolean>(false);
+  const forceUpdate = () => {
+    setUpdate(!update);
+  };
   useEffect(() => {
     getListOfContainers();
-  }, []);
+    setTimeout(() => {
+      forceUpdate();
+    }, 1000);
+  }, [update]);
 
   const getListOfContainers = async (): Promise<void> => {
     try {
@@ -45,7 +51,7 @@ const CardContainer = ({ setId }: any): any => {
   const displayContainers = containers
     .filter(
       (e: any) =>
-        e.Name[0].includes(search) ||
+        e.Name[0].toLowerCase().includes(search.toLowerCase()) ||
         e.Ports.map((p: any) =>
           p.PublicPort.toString().includes(search),
         ).includes(true),
