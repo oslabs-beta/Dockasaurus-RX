@@ -29,6 +29,7 @@ const Suggestions = ({id}: any) => {
   useEffect(() => {
     currentStatus(id);
     getAvgMEMOverTime(id);
+    getAvgCPUOverTime(id);
   },[id])
 
   // const currentStatus = async () => {
@@ -106,7 +107,7 @@ const Suggestions = ({id}: any) => {
 //         console.log(err);
 //     }
 // };
-  const currentStatus = async (id) => {
+  const currentStatus = async (id: string) => {
     try {
       const memQuery = `memory_usage_percent{container_id="${id}",job="docker_stats"}`;
       const cpuQuery = `cpu_usage_percent{container_id="${id}",job="docker_stats"}`;
@@ -131,9 +132,9 @@ const Suggestions = ({id}: any) => {
       };
       if (value <= 30) {
         setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been less than or equal to 30%.
-        To optimize your container's resources, Dockasaurus RX recommends to lower the memory limit to about 40% of your current limit. 
+        To optimize your container's resources, Dockasaurus RX recommends to lower the CPU limit to about 40% of your current limit. 
         This will allow other containers that need more CPU to perform better.
-        To lower the memory limit for your container, you can run the command "docker run --cpus=(number of bytes here) (image or container ID here)".
+        To lower the CPU limit for your container, you can run the command "docker run --cpus=(number of bytes here) (image or container ID here)".
         For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
       }
       if (value > 30 && value <= 50) {
@@ -237,11 +238,7 @@ const Suggestions = ({id}: any) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant='body1' color='text.secondary'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-            blandit augue ut elit suscipit, in convallis dui tempus. Nulla
-            facilisi. Suspendisse ultrices libero nec feugiat gravida. Sed
-            pellentesque velit sit amet dolor pulvinar, id fringilla arcu
-            vestibulum.
+            {CPUSuggestion}
           </Typography>
         </AccordionDetails>
       </Accordion>
