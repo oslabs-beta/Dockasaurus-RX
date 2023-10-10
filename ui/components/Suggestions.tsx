@@ -141,7 +141,7 @@ const Suggestions = ({ id }: any) => {
               fontWeight: 'bold',
             }}
             color='text.primary'>
-            Your Containers At A Glance
+            Your Container At A Glance
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
