@@ -29,9 +29,8 @@ const GrafanaData = () => {
       <iframe
         id='iframe1'
         src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=2&from=now-${view}`}
-        width='600'
         height='300'
-        style={{ border: 0 }}
+        style={{ width: '100%', border: '0'}}
       />
       <div>
         <Button
@@ -80,9 +79,8 @@ const GrafanaData = () => {
       <iframe
         id='iframe2'
         src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=1&from=now-${view}`}
-        width='600'
         height='300'
-        style={{ border: 0 }}
+        style={{ width: '100%', border: '0'}}
       />
     </div>
   );
