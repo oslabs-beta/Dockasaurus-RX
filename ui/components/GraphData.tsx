@@ -1,9 +1,11 @@
 import React from 'react';
 import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
+import {
+  Button,
+  MenuItem,
+  Divider
+} from '@mui/material';
 import { useMenuState } from '../hooks/useMenuState';
 
 const GrafanaData = () => {
@@ -37,11 +39,17 @@ const GrafanaData = () => {
           aria-controls={open ? 'customized-menu' : undefined}
           aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
-          variant='contained'
           disableElevation
           onClick={handleClick}
           endIcon={<KeyboardArrowDownIcon />}
-        >
+          variant='text'
+          sx={{
+            textTransform: 'uppercase',
+            fonSize: '0.95em',
+            borderRadius: '20px',
+            padding: '0.35rem',
+            margin: '3px',
+          }}>
           View
         </Button>
         <StyledMenu
@@ -51,8 +59,7 @@ const GrafanaData = () => {
           }}
           anchorEl={anchorEl}
           open={open}
-          onClose={handleClose}
-        >
+          onClose={handleClose}>
           <MenuItem value={'5m'} onClick={handleViewClick} disableRipple>
             Last 5 minutes
           </MenuItem>
