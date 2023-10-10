@@ -70,7 +70,7 @@ try {
   console.log('Did not need to delete the UNIX socket file.');
 }
 
-app.get('/test', async (req: any, res: any) => {
+app.get('/getContainers', async (req: any, res: any) => {
   try {
     const data = await getDockerContainers();
     const images = [];

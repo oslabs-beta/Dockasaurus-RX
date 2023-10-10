@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  DRX:
+  dockasaurusrx:
     image: ${DESKTOP_PLUGIN_IMAGE}
-    container_name: drx
+    container_name: dockasaurusrx
     volumes:
       - /var/run/docker.sock.raw:/var/run/docker.sock
       - shared-prometheus-files:/prometheus
@@ -22,7 +22,7 @@ services:
       - shared-prometheus-files:/etc/prometheus
       - prometheusdata:/prometheus
     depends_on:
-      - DRX
+      - dockasaurusrx
   grafana:
     image: grafana/grafana:latest
     container_name: grafana

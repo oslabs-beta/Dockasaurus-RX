@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64/linux/arm64 node:current-alpine3.17 AS client-builder
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17 AS client-builder
 WORKDIR /ui
 # cache packages in layer
 COPY ui/package.json /ui/package.json
