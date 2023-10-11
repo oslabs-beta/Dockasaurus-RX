@@ -63,20 +63,20 @@ const Suggestions = ({ id }: any) => {
             <Table size='small' aria-label='a dense table'>
               <TableHead>
                 <TableRow>
-                  <TableCell align='right'>Memory Usage</TableCell>
-                  <TableCell align='right'>CPU Usage</TableCell>
-                  <TableCell align='right'>Network I/O</TableCell>
-                  <TableCell align='right'>PIDS</TableCell>
+                  <TableCell align='center'>Memory Usage</TableCell>
+                  <TableCell align='center'>CPU Usage</TableCell>
+                  <TableCell align='center'>Network I/O</TableCell>
+                  <TableCell align='center'>PIDS</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell align='right'>{memValue}%</TableCell>
-                  <TableCell align='right'>{cpuValue}%</TableCell>
-                  <TableCell align='right'>
+                  <TableCell align='center'>{memValue}%</TableCell>
+                  <TableCell align='center'>{cpuValue}%</TableCell>
+                  <TableCell align='center'>
                     {networkInVal}/{networkOutVal}
                   </TableCell>
-                  <TableCell align='right'>{pidsVal}</TableCell>
+                  <TableCell align='center'>{pidsVal}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -95,9 +95,6 @@ const Suggestions = ({ id }: any) => {
       if (value >= 70) {
         setCPUSuggestion(
           <Box>
-            <Typography className='cardContent' color='text.primary'>
-              <b>OPTIMIZATION RECOMMENDATION:</b>
-            </Typography>
             <Typography className='optimizeContent'>
               This container environment's CPU utilization is <b>EXCESSIVE</b>.
               <p></p>
@@ -123,9 +120,6 @@ const Suggestions = ({ id }: any) => {
       if (value <= 30) {
         setCPUSuggestion(
           <Box>
-            <Typography className='cardContent' color='text.primary'>
-              <b>OPTIMIZATION RECOMMENDATION:</b>
-            </Typography>
             <Typography className='optimizeContent'>
               This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
               Over the past <b>7 days</b>, this container has maintained a CPU
@@ -188,9 +182,6 @@ const Suggestions = ({ id }: any) => {
       if (value >= 70) {
         setMEMSuggestion(
           <Box>
-            <Typography className='cardContent' color='text.primary'>
-              <b>OPTIMIZATION RECOMMENDATION:</b>
-            </Typography>
             <Typography className='optimizeContent'>
               This container environment's CPU utilization is <b>EXCESSIVE</b>.
               <p></p>
@@ -216,9 +207,6 @@ const Suggestions = ({ id }: any) => {
       if (value <= 30) {
         setMEMSuggestion(
           <Box>
-            <Typography className='cardContent' color='text.primary'>
-              <b>OPTIMIZATION RECOMMENDATION:</b>
-            </Typography>
             <Typography className='optimizeContent'>
               This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
               Over the past <b>7 days</b>, this container has maintained a
