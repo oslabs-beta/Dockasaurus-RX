@@ -19,18 +19,20 @@ const CardContainer = ({ setId }: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
-  console.log(search);
-  const testclick = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/test2');
-    console.log(result);
+  const [update, setUpdate] = useState<boolean>(false);
+  const forceUpdate = () => {
+    setUpdate(!update);
   };
   useEffect(() => {
-    sendMessageToTextBox();
-  }, []);
+    getListOfContainers();
+    setTimeout(() => {
+      forceUpdate();
+    }, 1000);
+  }, [update]);
 
-  const sendMessageToTextBox = async (): Promise<void> => {
+  const getListOfContainers = async (): Promise<void> => {
     try {
-      let results = await ddClient.extension.vm?.service?.get('/test');
+      let results = await ddClient.extension.vm?.service?.get('/getContainers');
       if (results === null) throw new Error();
 
       if (
@@ -46,12 +48,13 @@ const CardContainer = ({ setId }: any): any => {
     }
   };
 
-
   const displayContainers = containers
     .filter(
       (e: any) =>
-        e.Name[0].includes(search) ||
-        e.Ports.map((p: any) => p.PublicPort).includes(Number(search)),
+        e.Name[0].toLowerCase().includes(search.toLowerCase()) ||
+        e.Ports.map((p: any) =>
+          p.PublicPort.toString().includes(search),
+        ).includes(true),
     )
     .map((container: any) => {
       return (
@@ -98,7 +101,17 @@ const CardContainer = ({ setId }: any): any => {
             </Button>
             <Button
               variant='text'
-              onClick={testclick}
+              onClick={async () => {
+                try {
+                  await ddClient.extension.vm?.service?.post(
+                    `/api/${container.Id}/start`,
+                    {},
+                  );
+                  console.log('Container start request sent successfully');
+                } catch (error) {
+                  console.error('Failed to start the container:', error);
+                }
+              }}
               sx={{
                 textTransform: 'uppercase',
                 fontSize: '0.94em',
@@ -107,6 +120,28 @@ const CardContainer = ({ setId }: any): any => {
                 margin: '3px',
               }}>
               Run
+            </Button>
+            <Button
+              variant='text'
+              onClick={async () => {
+                try {
+                  await ddClient.extension.vm?.service?.post(
+                    `/api/${container.Id}/stop`,
+                    {},
+                  );
+                  console.log('Container stop request sent successfully');
+                } catch (error) {
+                  console.error('Failed to stop the container:', error);
+                }
+              }}
+              sx={{
+                textTransform: 'uppercase',
+                fontSize: '0.94em',
+                borderRadius: '35px',
+                padding: '0.35rem',
+                margin: '3px',
+              }}>
+              Stop
             </Button>
           </CardContent>
         </Card>

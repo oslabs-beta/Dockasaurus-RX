@@ -11,7 +11,7 @@ COPY ui /ui
 RUN npm i
 RUN npm run build
 
-FROM node:current-alpine3.17
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17
 
 WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
@@ -19,12 +19,12 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     org.opencontainers.image.vendor="DockasaurusRX" \
     com.docker.desktop.extension.api.version="0.3.4" \
     com.docker.extension.screenshots="" \
-    com.docker.desktop.extension.icon="" \
-    com.docker.extension.detailed-description="" \
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/main/screenshots/Dockasaurus.png" \ 
+    com.docker.extension.detailed-description="Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions for their Docker Containers." \
     com.docker.extension.publisher-url="" \
     com.docker.extension.additional-urls="" \
-    com.docker.extension.categories="" \
-    com.docker.extension.changelog=""
+    com.docker.extension.categories="utility-tools" \
+    com.docker.extension.changelog="<p>Extension changelog<ul><li>Dockasaurus RX Launches!</li></ul></p>"
 
 COPY backend ./backend
 COPY prometheus /prometheus

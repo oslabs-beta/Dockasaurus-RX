@@ -1,7 +1,6 @@
-import React from 'react';
 import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Button, Divider, MenuItem, Skeleton } from '@mui/material';
+import { Box, Button, Divider, MenuItem } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useMenuState } from '../hooks/useMenuState';
 import '../../ui/css/style.css';
