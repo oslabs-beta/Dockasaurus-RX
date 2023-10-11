@@ -129,8 +129,6 @@ function openStatsStream(id: String) {
   const req = http.request(options, res => {
     res.on('data', chunk => {
       let stats: DockerStats = JSON.parse('' + chunk);
-      console.log('streaming:', id);
-      console.log(stats);
       const cpu_stats = stats.cpu_stats;
       const precpu_stats = stats.precpu_stats;
       const memory_stats = stats.memory_stats;

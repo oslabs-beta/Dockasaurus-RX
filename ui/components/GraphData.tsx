@@ -3,7 +3,7 @@ import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, MenuItem, Divider } from '@mui/material';
 import { useMenuState } from '../hooks/useMenuState';
-import { useDockerDesktopClient } from './CardContainer'
+import { useDockerDesktopClient } from './CardContainer';
 import '../../ui/css/style.css';
 
 const GrafanaData = () => {
@@ -26,17 +26,15 @@ const GrafanaData = () => {
 
   const ddClient = useDockerDesktopClient();
 
-  const handleSelectAllClick = () => {
-    async () => {
-      console.log('Sending request to backend')
-      await ddClient.extension.vm?.service?.delete(`/api/filtergraph/`);
-      (document.getElementById('iframe1') as HTMLImageElement).src = (
-        document.getElementById('iframe1') as HTMLImageElement
-      ).src;
-      (document.getElementById('iframe2') as HTMLImageElement).src = (
-        document.getElementById('iframe2') as HTMLImageElement
-      ).src;
-    };
+  const handleSelectAllClick = async () => {
+    console.log('Sending request to backend');
+    await ddClient.extension.vm?.service?.delete(`/api/filtergraph/`);
+    (document.getElementById('iframe1') as HTMLImageElement).src = (
+      document.getElementById('iframe1') as HTMLImageElement
+    ).src;
+    (document.getElementById('iframe2') as HTMLImageElement).src = (
+      document.getElementById('iframe2') as HTMLImageElement
+    ).src;
   };
   const refreshGraphs = () => {
     (document.getElementById('iframe1') as HTMLImageElement).src = (
