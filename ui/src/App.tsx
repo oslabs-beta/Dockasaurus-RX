@@ -5,15 +5,10 @@ import Item from '../components/Item';
 import Grid from '@mui/material/Unstable_Grid2';
 import Box from '@mui/material/Box';
 import { useMenuState } from '../hooks/useMenuState';
-import GraphData from '../components/GraphData'
-
+import GraphData from '../components/GraphData';
 
 export function App() {
-
-  const {
-    id,
-    setId,
-  } = useMenuState();
+  const { id, setId } = useMenuState();
 
   return (
     <>
@@ -27,8 +22,7 @@ export function App() {
                 height: '100%',
               }}>
               <Item>
-          
-                <GraphData/>
+                <GraphData />
               </Item>
             </Box>
           </Grid>
@@ -54,6 +48,7 @@ export function App() {
               <Suggestions id={id} />
             </Box>
           </Grid>
+
         </Grid>
       </Box>
     </>

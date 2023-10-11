@@ -1,7 +1,8 @@
 import React from 'react';
 import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Button, MenuItem, Divider } from '@mui/material';
+import { Box, Button, Divider, MenuItem, Skeleton } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useMenuState } from '../hooks/useMenuState';
 import '../../ui/css/style.css';
 
@@ -21,6 +22,14 @@ const GrafanaData = () => {
     handleClose,
   } = useMenuState();
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, []);
+
   return (
     <>
       <Box
@@ -28,19 +37,27 @@ const GrafanaData = () => {
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-evenly',
-          height: '90%'
+          height: '90%',
         }}>
-        <iframe
-          className='framed'
-          id='iframe1'
-          src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=2&from=now-${view}`}
-        />
+        {loading ? (
+          <Skeleton variant='rectangular' width='49%' height='100%' animation='wave'/>
+        ) : (
+          <iframe
+            className='framed'
+            id='iframe1'
+            src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=2&from=now-${view}`}
+          />
+        )}
 
-        <iframe
-          className='framed'
-          id='iframe2'
-          src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=1&from=now-${view}`}
-        />
+        {loading ? (
+          <Skeleton variant='rectangular' width='49%' height='100%' animation='wave'/>
+        ) : (
+          <iframe
+            className='framed'
+            id='iframe2'
+            src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=1&from=now-${view}`}
+          />
+        )}
       </Box>
       <Button
         id='time-button'
@@ -53,10 +70,10 @@ const GrafanaData = () => {
         variant='text'
         sx={{
           textTransform: 'uppercase',
-          fonSize: '0.95em',
-          borderRadius: '30px',
+          fontSize: '0.90em',
+          borderRadius: '35px',
           padding: '0.35rem',
-          margin: '3px',
+          margin: '5px',
         }}>
         Select Time Period
       </Button>

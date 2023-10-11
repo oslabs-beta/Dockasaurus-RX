@@ -3,35 +3,41 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
   Typography,
 } from '@mui/material';
 import { ExpandCircleDown } from '@mui/icons-material';
 import Item from '../components/Item';
-import '../../ui/css/style.css';
 import { PrometheusDriver } from 'prometheus-query';
 import { useState, useEffect } from 'react';
+import '../../ui/css/style.css';
 
-interface Container {
-  value: {
-    value: number;
-  };
-}
-
-
-const Suggestions = ({id}: any) => {
-  const [MEMSuggestion, setMEMSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
-  const [CPUSuggestion, setCPUSuggestion] = useState<String>('Please select a container to view optimization suggestions.')
-  const [status, setStatus] = useState<String>('Please select a container to view your container at a glance.')
+const Suggestions = ({ id }: any) => {
+  const [MEMSuggestion, setMEMSuggestion] = useState<JSX.Element>(
+    <Box>Please select a container to view optimization suggestions.</Box>,
+  );
+  const [CPUSuggestion, setCPUSuggestion] = useState<JSX.Element>(
+    <Box>Please select a container to view optimization suggestions.</Box>,
+  );
+  const [status, setStatus] = useState<JSX.Element>(
+    <Box>Please select a container to view your container at a glance.</Box>,
+  );
   const prom: any = new PrometheusDriver({
-    endpoint: "http://localhost:9090"
+    endpoint: 'http://localhost:9090',
   });
-  
+
   useEffect(() => {
     currentStatus(id);
     getAvgMEMOverTime(id);
     getAvgCPUOverTime(id);
-  },[id])
-
+  }, [id]);
 
   const currentStatus = async (id: string) => {
     try {
@@ -50,34 +56,124 @@ const Suggestions = ({id}: any) => {
       const networkInVal = networkInRes.result[0].value.value;
       const networkOutVal = networkOutRes.result[0].value.value;
       const pidsVal = pidsRes.result[0].value.value;
-      setStatus(`Memory Usage %: ${memValue}%  CPU Usage %: ${cpuValue}%  Network I/O: ${networkInVal}/${networkOutVal}  PIDS: ${pidsVal}`);
+      // <Box>Memory Usage %: ${memValue}%  CPU Usage %: ${cpuValue}%  Network I/O: ${networkInVal}/${networkOutVal}  PIDS: ${pidsVal}</Box>
+      setStatus(
+        <Box>
+          <TableContainer>
+            <Table size='small' aria-label='a dense table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell align='right'>Memory Usage</TableCell>
+                  <TableCell align='right'>CPU Usage</TableCell>
+                  <TableCell align='right'>Network I/O</TableCell>
+                  <TableCell align='right'>PIDS</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell align='right'>{memValue}%</TableCell>
+                  <TableCell align='right'>{cpuValue}%</TableCell>
+                  <TableCell align='right'>
+                    {networkInVal}/{networkOutVal}
+                  </TableCell>
+                  <TableCell align='right'>{pidsVal}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>,
+      );
     } catch (err) {
       console.log(err);
     }
-  }
+  };
   const getAvgCPUOverTime = async (id: string) => {
     try {
-      const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`
+      const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
       const res = await prom.instantQuery(query);
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been been greater than or equal to 70%, averaging at ${value}%. 
-        To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
-        Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
-        For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
-      };
+        setCPUSuggestion(
+          <Box>
+            <Typography className='cardContent' color='text.primary'>
+              <b>OPTIMIZATION RECOMMENDATION:</b>
+            </Typography>
+            <Typography className='optimizeContent'>
+              This container environment's CPU utilization is <b>EXCESSIVE</b>.
+              <p></p>
+              For the past <b>7 days</b>, this container maintained a CPU Usage
+              Percent consistently <b>greater than or equal to 70%</b>, with an <b>average of {value}%</b>. To optimize this container's
+              resources, consider creating a Docker Swarm. Docker Swarm offers
+              automatic scaling, desired state reconciliation, and load
+              balancing.
+              <br></br>
+              <br></br>
+            </Typography>
+            <Typography variant='caption'>
+              <b>
+                For a tutorial on Docker Swarm, please refer to the Docker
+                documentation at the link below:
+              </b>
+              <br></br>
+              https://docs.docker.com/engine/swarm/swarm-tutorial/
+            </Typography>
+          </Box>,
+        );
+      }
       if (value <= 30) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been less than or equal to 30%, averaging at ${value}%.
-        To optimize your container's resources, Dockasaurus RX recommends to lower the CPU limit to about 40% of your current limit. 
-        This will allow other containers that need more CPU to perform better.
-        To lower the CPU limit for your container, you can run the command "docker run --cpus=(number of bytes here) (image or container ID here)".
-        For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
+        setCPUSuggestion(
+          <Box>
+            <Typography className='cardContent' color='text.primary'>
+              <b>OPTIMIZATION RECOMMENDATION:</b>
+            </Typography>
+            <Typography className='optimizeContent'>
+              This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
+              Over the past <b>7 days</b>, this container has maintained a CPU
+              Usage Percentage consistently <b>at or below 30%</b>, with an <b>average usage of {value}%</b>. To enhance the performance of
+              other containerized environments, consider reducing this
+              container's Memory Limit. To reduce the Memory Limit of this
+              container, run the following command:
+              <br></br>
+              <br></br>
+              <br></br>
+              <center>
+                <TextField
+                  defaultValue='docker run -m [number of bytes][b, k, m, g suffix] [image or container ID]'
+                  variant='outlined'
+                  size='small'
+                  sx={{ width: '77%' }}
+                />
+              </center>
+              <br></br>
+              <br></br>
+            </Typography>
+            <Typography variant='caption'>
+              <b>
+                For further information on resource constraints, please refer to
+                the Docker documentation below:
+              </b>
+              <br></br>
+              https://docs.docker.com/config/containers/resource_constraints/
+            </Typography>
+          </Box>,
+        );
       }
       if (value > 30 && value <= 50) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been healthy, using between 30% to 50% of your CPU, averaging at ${value}%.`);
+        setCPUSuggestion(
+          <Box>
+            For the past 7 days, your CPU Usage Percent has been healthy, using
+            between 30% to 50% of your CPU, averaging at {value}%.
+          </Box>,
+        );
       }
       if (value > 50 && value < 70) {
-        setCPUSuggestion(`For the past 7 days, your CPU Usage Percent has been slightly higher than normal, using between 50% to 70% of your CPU, averaging at ${value}%. CPU Usage may need to be optimized soon.`)
+        setCPUSuggestion(
+          <Box>
+            For the past 7 days, your CPU Usage Percent has been slightly higher
+            than normal, using between 50% to 70% of your CPU, averaging at{' '}
+            {value}%. CPU Usage may need to be optimized soon.
+          </Box>,
+        );
       }
     } catch (err) {
       console.log(err);
@@ -90,23 +186,88 @@ const Suggestions = ({id}: any) => {
       const res = await prom.instantQuery(query);
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been greater than or equal to 70%, averaging at ${value}%. 
-        To optimize your container's resources, Dockasaurus RX recommends to create a Docker Swarm. 
-        Docker Swarm offers many features to optimize your container's resources and performance such as automatic scaling, desired state reconciliation, load balancing and many more. 
-        For more information, please refer to the Docker documentation here: https://docs.docker.com/engine/swarm/swarm-tutorial/`);
-      };
+        setMEMSuggestion(
+          <Box>
+            <Typography className='cardContent' color='text.primary'>
+              <b>OPTIMIZATION RECOMMENDATION:</b>
+            </Typography>
+            <Typography className='optimizeContent'>
+              This container environment's CPU utilization is <b>EXCESSIVE</b>.
+              <p></p>
+              For the past <b>7 days</b>, this container maintained a Memory Usage
+              Percent consistently <b>greater than or equal to 70%</b>, with an <b>average of {value}%</b>. To optimize this container's
+              resources, consider creating a Docker Swarm. Docker Swarm offers
+              automatic scaling, desired state reconciliation, and load
+              balancing.
+              <br></br>
+              <br></br>
+            </Typography>
+            <Typography variant='caption'>
+              <b>
+                For a tutorial on Docker Swarm, please refer to the Docker
+                documentation at the link below:
+              </b>
+              <br></br>
+              https://docs.docker.com/engine/swarm/swarm-tutorial/
+            </Typography>
+          </Box>,
+        );
+      }
       if (value <= 30) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been less than or equal to 30%, averaging at ${value}%.
-        To optimize your container's resources, Dockasaurus RX recommends to lower the memory limit to about 40% of your current limit. 
-        This will allow other containers that need more memory to perform better.
-        To lower the memory limit for your container, you can run the command "docker run -m (number of bytes here)(b, k, m, g suffix here) (image or container ID here)".
-        For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
+        setMEMSuggestion(
+          <Box>
+            <Typography className='cardContent' color='text.primary'>
+              <b>OPTIMIZATION RECOMMENDATION:</b>
+            </Typography>
+            <Typography className='optimizeContent'>
+              This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
+              Over the past <b>7 days</b>, this container has maintained a
+              Memory Usage Percentage consistently <b>at or below 30%</b>, with
+              an <b>average usage of {value}%</b>. To enhance the performance of
+              other containerized environments, consider reducing this
+              container's Memory Limit. To reduce the Memory Limit of this
+              container, run the following command:
+              <br></br>
+              <br></br>
+              <br></br>
+              <center>
+                <TextField
+                  defaultValue='docker run -m [number of bytes][b, k, m, g suffix] [image or container ID]'
+                  variant='outlined'
+                  size='small'
+                  sx={{ width: '77%' }}
+                />
+              </center>
+              <br></br>
+              <br></br>
+            </Typography>
+            <Typography variant='caption'>
+              <b>
+                For further information on resource constraints, please refer to
+                the Docker documentation below:
+              </b>
+              <br></br>
+              https://docs.docker.com/config/containers/resource_constraints/
+            </Typography>
+          </Box>,
+        );
       }
       if (value > 30 && value <= 50) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been healthy, using between 30% to 50% of your memory, averaging at ${value}%.`);
+        setMEMSuggestion(
+          <Box>
+            For the past 7 days, your Memory Usage Percent has been healthy,
+            using between 30% to 50% of your memory, averaging at {value}%.
+          </Box>,
+        );
       }
       if (value > 50 && value < 70) {
-        setMEMSuggestion(`For the past 7 days, your Memory Usage Percent has been slightly higher than normal, using between 50% to 70% of your memory, averaging at ${value}%. Memory Usage may need to be optimized soon.`)
+        setMEMSuggestion(
+          <Box>
+            For the past 7 days, your Memory Usage Percent has been slightly
+            higher than normal, using between 50% to 70% of your memory,
+            averaging at {value}%. Memory Usage may need to be optimized soon.
+          </Box>,
+        );
       }
     } catch (err) {
       console.log(err);
@@ -127,7 +288,7 @@ const Suggestions = ({id}: any) => {
               fontWeight: 'bold',
             }}
             color='text.primary'>
-            Your Containers At A Glance
+            At A Glance
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -148,12 +309,12 @@ const Suggestions = ({id}: any) => {
               fontWeight: 'bold',
             }}
             color='text.primary'>
-            Memory Usage Optimization Recommendation
+            Memory Utilization
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant='body1' color='text.secondary'>
-            {MEMSuggestion}
+            <Box>{MEMSuggestion}</Box>
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -169,7 +330,7 @@ const Suggestions = ({id}: any) => {
               fontWeight: 'bold',
             }}
             color='text.primary'>
-            CPU Usage Optimization Recommendation
+            CPU Utilization
           </Typography>
         </AccordionSummary>
         <AccordionDetails>

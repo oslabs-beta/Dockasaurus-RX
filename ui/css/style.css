@@ -28,6 +28,12 @@
   margin: 0px;
 }
 
+.optimizeContent {
+  text-transform: none;
+  padding: 0.5rem;
+  margin: 0px;
+}
+
 .title {
   /* font-size: 15px; */
   text-transform: uppercase;

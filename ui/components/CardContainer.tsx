@@ -89,8 +89,8 @@ const CardContainer = ({ setId }: any): any => {
               }}
               sx={{
                 textTransform: 'uppercase',
-                fonSize: '0.95em',
-                borderRadius: '20px',
+                fontSize: '0.94em',
+                borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
@@ -101,8 +101,8 @@ const CardContainer = ({ setId }: any): any => {
               onClick={testclick}
               sx={{
                 textTransform: 'uppercase',
-                fonSize: '0.95em',
-                borderRadius: '20px',
+                fontSize: '0.94em',
+                borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
