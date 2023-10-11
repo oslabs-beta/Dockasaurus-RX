@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
 import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Button, MenuItem, Divider } from '@mui/material';
+import { Box, Button, Divider, MenuItem } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useMenuState } from '../hooks/useMenuState';
 import { useDockerDesktopClient } from './CardContainer';
 import '../../ui/css/style.css';
@@ -86,10 +86,10 @@ const GrafanaData = () => {
         variant='text'
         sx={{
           textTransform: 'uppercase',
-          fonSize: '0.95em',
-          borderRadius: '30px',
+          fontSize: '0.90em',
+          borderRadius: '35px',
           padding: '0.35rem',
-          margin: '3px',
+          margin: '5px',
         }}>
         Select Time Period
       </Button>

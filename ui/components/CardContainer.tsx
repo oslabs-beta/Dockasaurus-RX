@@ -92,8 +92,8 @@ const CardContainer = ({ setId }: any): any => {
               }}
               sx={{
                 textTransform: 'uppercase',
-                fonSize: '0.95em',
-                borderRadius: '20px',
+                fontSize: '0.94em',
+                borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
@@ -120,12 +120,12 @@ const CardContainer = ({ setId }: any): any => {
                   }
                 }}
                 sx={{
-                  textTransform: 'uppercase',
-                  fonSize: '0.95em',
-                  borderRadius: '20px',
-                  padding: '0.35rem',
-                  margin: '3px',
-                }}>
+                textTransform: 'uppercase',
+                fontSize: '0.94em',
+                borderRadius: '35px',
+                padding: '0.35rem',
+                margin: '3px',
+              }}>
                 Run
               </Button>
             )}
@@ -150,12 +150,12 @@ const CardContainer = ({ setId }: any): any => {
                   }
                 }}
                 sx={{
-                  textTransform: 'uppercase',
-                  fonSize: '0.95em',
-                  borderRadius: '20px',
-                  padding: '0.35rem',
-                  margin: '3px',
-                }}>
+                textTransform: 'uppercase',
+                fontSize: '0.94em',
+                borderRadius: '35px',
+                padding: '0.35rem',
+                margin: '3px',
+              }}>
                 Stop
               </Button>
             )}
@@ -173,7 +173,7 @@ const CardContainer = ({ setId }: any): any => {
           justifyContent: 'space-evenly',
         }}>
         <TextField
-          style={{ width: '96%', margin: '4px 0px 10px 0px' }}
+          style={{ width: '98%', margin: '0px 0px 5px 0px' }}
           variant='outlined'
           label='Search by Name/Port'
           onChange={e => {
