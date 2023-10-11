@@ -77,7 +77,7 @@ const Suggestions = ({ id }: any) => {
         To optimize your container's resources, Dockasaurus RX recommends to lower the CPU limit to about 40% of your current limit. 
         This will allow other containers that need more CPU to perform better.
         To lower the CPU limit for your container, you can run the command "docker run --cpus=(number of bytes here) (image or container ID here)".
-        For more information, please refer to the Docker documentation here: https://docs.docker.com/config/containers/resource_constraints/`);
+        For more information, please refer to the Docker documentation here: "https://docs.docker.com/config/containers/resource_constraints/"`);
       }
       if (value > 30 && value <= 50) {
         setCPUSuggestion(

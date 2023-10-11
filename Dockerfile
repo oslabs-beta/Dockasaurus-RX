@@ -11,7 +11,7 @@ COPY ui /ui
 RUN npm i
 RUN npm run build
 
-FROM node:current-alpine3.17
+FROM --platform=$BUILDPLATFORM node:current-alpine3.17
 
 WORKDIR /dockasaurus/
 LABEL org.opencontainers.image.title="DockasaurusRX" \
@@ -19,8 +19,7 @@ LABEL org.opencontainers.image.title="DockasaurusRX" \
     org.opencontainers.image.vendor="DockasaurusRX" \
     com.docker.desktop.extension.api.version="0.3.4" \
     com.docker.extension.screenshots="" \
-    #will need to change icon path to MAIN before launching
-    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/Dockasaurus.png" \ 
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/main/screenshots/Dockasaurus.png" \ 
     com.docker.extension.detailed-description="Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions for their Docker Containers." \
     com.docker.extension.publisher-url="" \
     com.docker.extension.additional-urls="" \

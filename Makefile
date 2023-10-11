@@ -1,4 +1,4 @@
-IMAGE?=drx/dockasaurusrx
+IMAGE?=dockasaurusrx/dockasaurusrx
 TAG?=1.0.0
 
 BUILDER=buildx-multi-arch
