@@ -11,7 +11,7 @@ import '../../ui/css/style.css';
 
 const client = createDockerDesktopClient();
 
-function useDockerDesktopClient() {
+export function useDockerDesktopClient() {
   return client;
 }
 
@@ -123,7 +123,7 @@ const CardContainer = ({ setId }: any): any => {
             </Button>
             <Button
               variant='text'
-              onClick={async () => {
+              onClick={async() => {
                 try {
                   await ddClient.extension.vm?.service?.post(
                     `/api/${container.Id}/stop`,
