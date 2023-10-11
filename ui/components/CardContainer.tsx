@@ -11,26 +11,28 @@ import '../../ui/css/style.css';
 
 const client = createDockerDesktopClient();
 
-function useDockerDesktopClient() {
+export function useDockerDesktopClient() {
   return client;
 }
 
-const CardContainer = (): any => {
+const CardContainer = ({ setId }: any): any => {
   const ddClient = useDockerDesktopClient();
   const [search, setSearch] = useState('');
   const [containers, setContainers] = useState<Object[]>([]);
-  console.log(search);
-  const testclick = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/test2');
-    console.log(result);
+  const [update, setUpdate] = useState<boolean>(false);
+  const forceUpdate = () => {
+    setUpdate(!update);
   };
   useEffect(() => {
-    sendMessageToTextBox();
-  }, []);
+    getListOfContainers();
+    setTimeout(() => {
+      forceUpdate();
+    }, 1000);
+  }, [update]);
 
-  const sendMessageToTextBox = async (): Promise<void> => {
+  const getListOfContainers = async (): Promise<void> => {
     try {
-      let results = await ddClient.extension.vm?.service?.get('/test');
+      let results = await ddClient.extension.vm?.service?.get('/getContainers');
       if (results === null) throw new Error();
 
       if (
@@ -45,14 +47,14 @@ const CardContainer = (): any => {
       throw new Error();
     }
   };
-  // console.log(containers);
-  // console.log(containers.filter((e: any) => e.Name[0].includes(search)));
-  console.log(containers);
+
   const displayContainers = containers
     .filter(
       (e: any) =>
-        e.Name[0].includes(search) ||
-        e.Ports.map((p: any) => p.PublicPort).includes(Number(search)),
+        e.Name[0].toLowerCase().includes(search.toLowerCase()) ||
+        e.Ports.map((p: any) =>
+          p.PublicPort.toString().includes(search),
+        ).includes(true),
     )
     .map((container: any) => {
       return (
@@ -74,28 +76,89 @@ const CardContainer = (): any => {
 
             <Button
               variant='text'
-              onClick={testclick}
+              onClick={async () => {
+                await ddClient.extension.vm?.service?.post(
+                  `/api/filtergraph/${container.Id}`,
+                  JSON.stringify({}),
+                );
+                (document.getElementById('iframe1') as HTMLImageElement).src = (
+                  document.getElementById('iframe1') as HTMLImageElement
+                ).src;
+                (document.getElementById('iframe2') as HTMLImageElement).src = (
+                  document.getElementById('iframe2') as HTMLImageElement
+                ).src;
+
+                setId(container.Id);
+              }}
               sx={{
                 textTransform: 'uppercase',
-                fonSize: '0.95em',
-                borderRadius: '20px',
+                fontSize: '0.94em',
+                borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
               Select
             </Button>
-            <Button
-              variant='text'
-              onClick={testclick}
-              sx={{
+            {[39870, 39871, 39872]
+              .map(e =>
+                container.Ports.map((p: any) => p.PublicPort).includes(e),
+              )
+              .includes(true) ? (
+              <div />
+            ) : (
+              <Button
+                variant='text'
+                onClick={async () => {
+                  try {
+                    await ddClient.extension.vm?.service?.post(
+                      `/api/${container.Id}/start`,
+                      {},
+                    );
+                    console.log('Container start request sent successfully');
+                  } catch (error) {
+                    console.error('Failed to start the container:', error);
+                  }
+                }}
+                sx={{
                 textTransform: 'uppercase',
-                fonSize: '0.95em',
-                borderRadius: '20px',
+                fontSize: '0.94em',
+                borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
-              Run
-            </Button>
+                Run
+              </Button>
+            )}
+            {[39870, 39871, 39872]
+              .map(e =>
+                container.Ports.map((p: any) => p.PublicPort).includes(e),
+              )
+              .includes(true) ? (
+              <div />
+            ) : (
+              <Button
+                variant='text'
+                onClick={async () => {
+                  try {
+                    await ddClient.extension.vm?.service?.post(
+                      `/api/${container.Id}/stop`,
+                      {},
+                    );
+                    console.log('Container stop request sent successfully');
+                  } catch (error) {
+                    console.error('Failed to stop the container:', error);
+                  }
+                }}
+                sx={{
+                textTransform: 'uppercase',
+                fontSize: '0.94em',
+                borderRadius: '35px',
+                padding: '0.35rem',
+                margin: '3px',
+              }}>
+                Stop
+              </Button>
+            )}
           </CardContent>
         </Card>
       );
@@ -110,7 +173,7 @@ const CardContainer = (): any => {
           justifyContent: 'space-evenly',
         }}>
         <TextField
-          style={{ width: '96%', margin: '4px 0px 10px 0px' }}
+          style={{ width: '98%', margin: '0px 0px 5px 0px' }}
           variant='outlined'
           label='Search by Name/Port'
           onChange={e => {

@@ -1,20 +1,14 @@
-import Grid from '@mui/material/Unstable_Grid2';
-import Box from '@mui/material/Box';
+import React, { useState } from 'react';
 import CardContainer from '../components/CardContainer';
 import Suggestions from '../components/Suggestions';
 import Item from '../components/Item';
+import Grid from '@mui/material/Unstable_Grid2';
+import Box from '@mui/material/Box';
+import { useMenuState } from '../hooks/useMenuState';
+import GraphData from '../components/GraphData';
 
 export function App() {
-  // const stats = async () => {
-  //   try {
-  //     const result = await ddClient.extension.vm?.service?.get('/stats');
-  //     console.log(result);
-      // setContainerStats(result);
-  //     return result;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const { id, setId } = useMenuState();
 
   return (
     <>
@@ -27,10 +21,12 @@ export function App() {
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Item>Dashboard Panel:</Item>
+              <Item>
+                <GraphData />
+              </Item>
             </Box>
           </Grid>
-          <Grid xs={12} md={7}>
+          <Grid xs={12} md={6}>
             <Box
               sx={{
                 boxShadow: '4px 4px 7px 0px rgba(0, 0, 0, .25)',
@@ -38,20 +34,21 @@ export function App() {
                 height: '100%',
               }}>
               <Item>
-                <CardContainer />
+                <CardContainer setId={setId} />
               </Item>
             </Box>
           </Grid>
-          <Grid xs={12} md={5}>
+          <Grid xs={12} md={6}>
             <Box
               sx={{
                 boxShadow: '4px 4px 7px 0px rgba(0, 0, 0, .25)',
                 padding: '0rem',
                 height: '100%',
               }}>
-              <Suggestions />
+              <Suggestions id={id} />
             </Box>
           </Grid>
+
         </Grid>
       </Box>
     </>

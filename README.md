@@ -1,107 +1,185 @@
-# DockasaurusRX
 
-This repository defines an example of a Docker extension. The files in this repository have been automatically generated as a result of running `docker extension init`.
 
-This extension is composed of:
+# Dockasaurus RX 🦖
+Docker container diagnostics at your fingertips.
 
-- A [frontend](./ui) app in React that makes a request to the `/hello` endpoint and displays the payload in Docker Desktop.
-- A [backend](./backend) container that runs an API in Go. It exposes the `/hello` endpoint which returns a JSON payload.
+        **INSERT Dockasaurus RX LOGO HERE**
 
-> You can build your Docker Extension using your fav tech stack:
->
-> - Frontend: React, Angular, Vue, Svelte, etc.
->   Basically, any frontend framework you can bundle in an `index.html` file with CSS, and JS assets.
-> - Backend (optional): anything that can run in a container.
+Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions.
 
-<details>
-  <summary>Looking for more templates?</summary>
 
-1. [React + NodeJS](https://github.com/benja-M-1/node-backend-extension).
-2. [React + .NET 6 WebAPI](https://github.com/felipecruz91/dotnet-api-docker-extension).
 
-Request one or submit yours [here](https://github.com/docker/extensions-sdk/issues).
 
-</details>
 
-## Local development
 
-You can use `docker` to build, install and push your extension. Also, we provide an opinionated [Makefile](Makefile) that could be convenient for you. There isn't a strong preference of using one over the other, so just use the one you're most comfortable with.
+## Table of Contents 📖
 
-To build the extension, use `make build-extension` **or**:
+- [About](#about-💡)
+- [Core Features](#core-features-⭐️)
+- [Under the hood](#under-the-hood-🩻) 
+- [Installation](#installation-💿)
+- [Development Roadmap](#development-roadmap🚧)
+- [Contributing](#contributing-➕)
+- [Contact](#contact-📧)
+- [Creators](#creators-👥)
 
-```shell
-  docker buildx build -t DRX/DockasaurusRX:latest . --load
-```
 
-To install the extension, use `make install-extension` **or**:
 
-```shell
-  docker extension install DRX/DockasaurusRX:latest
-```
 
-> If you want to automate this command, use the `-f` or `--force` flag to accept the warning message.
 
-To preview the extension in Docker Desktop, open Docker Dashboard once the installation is complete. The left-hand menu displays a new tab with the name of your extension. You can also use `docker extension ls` to see that the extension has been installed successfully.
 
-### Frontend development
+## About 💡
 
-During the development of the frontend part, it's helpful to use hot reloading to test your changes without rebuilding your entire extension. To do this, you can configure Docker Desktop to load your UI from a development server.
-Assuming your app runs on the default port, start your UI app and then run:
+A nimble and easy-to-use DevOps container tool, Dockasaurus RX has a major trick up its sleeve beyond mere monitoring and visualization. It's more than a pulse check. To keep your applications happy and healthy, Dockasaurus RX retains important vitals of all your containers for 7 days allowing comparisons to be drawn regarding the well-being of concurrent container workloads over a designated period.
 
-```shell
-  cd ui
-  npm install
-  npm run dev
-```
 
-This starts a development server that listens on port `3000`.
 
-You can now tell Docker Desktop to use this as the frontend source. In another terminal run:
 
-```shell
-  docker extension dev ui-source DRX/DockasaurusRX:latest http://localhost:3000
-```
 
-In order to open the Chrome Dev Tools for your extension when you click on the extension tab, run:
 
-```shell
-  docker extension dev debug DRX/DockasaurusRX:latest
-```
+## Core Features ⭐️
 
-Each subsequent click on the extension tab will also open Chrome Dev Tools. To stop this behaviour, run:
+        **INSERT MAIN DEMO GIF HERE**
 
-```shell
-  docker extension dev reset DRX/DockasaurusRX:latest
-```
+The extension is divided into a minimal yet feature-rich 3 panel dashboard, designed to be uncluttered, collapsible, and viewport adaptive to your DevOps needs.
 
-### Backend development (optional)
+- 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and Memory Usage Percent in 2 Grafana iframes.
 
-This example defines an API in Go that is deployed as a backend container when the extension is installed. This backend could be implemented in any language, as it runs inside a container. The extension frameworks provides connectivity from the extension UI to a socket that the backend has to connect to on the server side.
+        **INSERT VISUALIZATION DEMO GIF HERE**
 
-Note that an extension doesn't necessarily need a backend container, but in this example we include one for teaching purposes.
+- 🗃️ The lower section of DRX's dashboard is shared by 2 panels. The left section houses interactive **Container Cards** that allow for dynamic searches, filtering, and selection where containers can be run, stopped, viewed, or pruned.
 
-Whenever you make changes in the [backend](./backend) source code, you will need to compile them and re-deploy a new version of your backend container.
-Use the `docker extension update` command to remove and re-install the extension automatically:
+        **INSERT SEARCH AND FILTERING DEMO GIF HERE**
 
-```shell
-docker extension update DRX/DockasaurusRX:latest
-```
+- 👑 The crown jewel of DRX is **Optimization**. Suggestions are prescribed in the bottom right panel. Once a container is selected, DRX automatically assesses the health of the containerized application and suggests 3 levels of optimization displayed in the accordion along with a comparative analysis of historical data.
 
-> If you want to automate this command, use the `-f` or `--force` flag to accept the warning message.
+        **INSERT ACCORDION DEMO GIF HERE**
 
-> Extension containers are hidden from the Docker Dashboard by default. You can change this in Settings > Extensions > Show Docker Extensions system containers.
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
 
-### Clean up
 
-To remove the extension:
 
-```shell
-docker extension rm DRX/DockasaurusRX:latest
-```
 
-## What's next?
 
-- To learn more about how to build your extension refer to the Extension SDK docs at https://docs.docker.com/desktop/extensions-sdk/.
-- To publish your extension in the Marketplace visit https://www.docker.com/products/extensions/submissions/.
-- To report issues and feedback visit https://github.com/docker/extensions-sdk/issues.
-- To look for other ideas of new extensions, or propose new ideas of extensions you would like to see, visit https://github.com/docker/extension-ideas/discussions.
+
+## Under the hood 🩻
+
+The Dockasaurus RX Docker Desktop extension is a frontend **React** application built with the MUI Component Library and leverages the following additonal technologies to benefit users:
+-  **Node.js**
+-  **Prometheus** establishes a robust data pipeline for gathering and storing Docker Engine metrics, ensuring accuracy and space efficiency. DRX's Optimization Suggestions rule-based algorithms are written with data scraped by Prometheus.
+-  **Grafana** seamlessly extracts and visualizes Docker container metrics to provide the frontend with interactive charts and graphs for comprehensive container performance monitoring.
+
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
+
+
+
+
+
+
+## Installation 💿
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
+
+
+
+
+
+
+## Development Roadmap 🚧
+
+- [X] Add 'At A Glance' Comparison to Optimization Panel
+- [X] Add CPU usage Grafana Visualization
+- [X] Add Optimization Algorithm
+- [ ] Add Unit Testing
+- [ ] Add CPU Usage Alerts
+- [ ] Add Snapshot CRUD Functionality
+- [ ] Add Optimization Chart to Optimizaton Panel
+- [ ] Multi-language Support
+    - [ ] Chinese
+    - [ ] Spanish
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
+
+
+
+
+
+
+## Contributing ➕
+Dockasaurus RX is our pride and joy and we'd love to see the open source community collaborate and participate in its growth. We invite you to share your ideas. Please reach out below.
+
+Contributions can also be made by simply **Forking** DRX. From your fork:
+
+1. Create a Feature Branch (git checkout -b feature/Idea)
+2. Commit your Changes (git commit -m 'A message detailing your idea')
+3. Push to the Branch (git push origin feature/Idea)
+4. Open a Pull Request to be reviewed
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
+
+
+
+
+
+
+## Contact 📧
+
+- **Email:** [dockasaurusrx@gmail.com](mailto:dockasaurusrx@gmail.com)
+- **GitHub:** [https://github.com/oslabs-beta/Dockasaurus-RX](https://github.com/oslabs-beta/Dockasaurus-RX)
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
+
+
+
+
+
+
+## Creators 👥
+
+<table style="width:100%;">
+   <tr>
+    <td style="width:200px">
+    <p align="center">
+      <img src="https://github.com/Choebryan.png" style="width:6rem; border:1px solid red" /><br>
+      <strong>Bryan Choe</strong><br>
+      <a href="https://github.com/Choebryan">GitHub</a><br/>
+      <a href="https://www.linkedin.com/in/bryan-choe/">LinkedIn</a>
+    </p>
+    </td>
+    <td style="width:200px">
+      <p align="center">
+      <img src="https://github.com/jchu47.png" style="width:6rem;" /><br/>
+      <strong>Justin Chu</strong><br/>
+      <a href="https://github.com/jchu47">GitHub</a><br/>
+      <a href="https://www.linkedin.com/in/justin-chu-10a70a205/">LinkedIn</a>
+      </p>
+    </td>
+    <td style="width:200px">
+      <p align="center">
+      <img src="https://github.com/zampare.png" style="width:6rem;" /><br/>
+      <strong>Nate Doucette</strong><br/>
+      <a href="https://github.com/zampare">GitHub</a><br/>
+      <a href="https://www.linkedin.com/in/nate-doucette-473a04141/">LinkedIn</a>
+      </p>
+    </td>
+    <td style="width:200px">
+      <p align="center">
+      <img src="https://github.com/hommesweethomme.png" style="width:6rem;" /><br/>
+      <strong>Christian Robinson</strong><br/>
+      <a href="https://github.com/hommesweethomme">GitHub</a><br/>
+      <a href="https://www.linkedin.com/in/christian-daniel-robinson/">LinkedIn</a>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<p align="right">(<a href="#readme-top">return to top</a>)</p>
