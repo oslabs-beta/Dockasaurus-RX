@@ -26,7 +26,7 @@ export function App() {
               </Item>
             </Box>
           </Grid>
-          <Grid xs={12} md={7}>
+          <Grid xs={12} md={6}>
             <Box
               sx={{
                 boxShadow: '4px 4px 7px 0px rgba(0, 0, 0, .25)',
@@ -38,7 +38,7 @@ export function App() {
               </Item>
             </Box>
           </Grid>
-          <Grid xs={12} md={5}>
+          <Grid xs={12} md={6}>
             <Box
               sx={{
                 boxShadow: '4px 4px 7px 0px rgba(0, 0, 0, .25)',

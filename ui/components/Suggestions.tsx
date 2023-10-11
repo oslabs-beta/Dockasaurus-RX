@@ -30,7 +30,7 @@ const Suggestions = ({ id }: any) => {
     <Box>Please select a container to view your container at a glance.</Box>,
   );
   const prom: any = new PrometheusDriver({
-    endpoint: 'http://localhost:9090',
+    endpoint: 'http://localhost:39871',
   });
 
   useEffect(() => {
@@ -56,17 +56,19 @@ const Suggestions = ({ id }: any) => {
       const networkInVal = networkInRes.result[0].value.value;
       const networkOutVal = networkOutRes.result[0].value.value;
       const pidsVal = pidsRes.result[0].value.value;
-      // <Box>Memory Usage %: ${memValue}%  CPU Usage %: ${cpuValue}%  Network I/O: ${networkInVal}/${networkOutVal}  PIDS: ${pidsVal}</Box>
+
       setStatus(
         <Box>
           <TableContainer>
-            <Table size='small' aria-label='a dense table'>
+            <Table aria-label='a dense table'>
               <TableHead>
                 <TableRow>
                   <TableCell align='center'>Memory Usage</TableCell>
                   <TableCell align='center'>CPU Usage</TableCell>
                   <TableCell align='center'>Network I/O</TableCell>
                   <TableCell align='center'>PIDS</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -77,6 +79,8 @@ const Suggestions = ({ id }: any) => {
                     {networkInVal}/{networkOutVal}
                   </TableCell>
                   <TableCell align='center'>{pidsVal}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -87,10 +91,12 @@ const Suggestions = ({ id }: any) => {
       console.log(err);
     }
   };
+
   const getAvgCPUOverTime = async (id: string) => {
     try {
       const query = `avg_over_time(cpu_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
       const res = await prom.instantQuery(query);
+
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
         setCPUSuggestion(
@@ -99,7 +105,8 @@ const Suggestions = ({ id }: any) => {
               This container environment's CPU utilization is <b>EXCESSIVE</b>.
               <p></p>
               For the past <b>7 days</b>, this container maintained a CPU Usage
-              Percent consistently <b>greater than or equal to 70%</b>, with an <b>average of {value}%</b>. To optimize this container's
+              Percent consistently <b>greater than or equal to 70%</b>, with an{' '}
+              <b>average of {value}%</b>.<p></p>To optimize this container's
               resources, consider creating a Docker Swarm. Docker Swarm offers
               automatic scaling, desired state reconciliation, and load
               balancing.
@@ -121,18 +128,19 @@ const Suggestions = ({ id }: any) => {
         setCPUSuggestion(
           <Box>
             <Typography className='optimizeContent'>
-              This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
               Over the past <b>7 days</b>, this container has maintained a CPU
-              Usage Percentage consistently <b>at or below 30%</b>, with an <b>average usage of {value}%</b>. To enhance the performance of
-              other containerized environments, consider reducing this
-              container's Memory Limit. To reduce the Memory Limit of this
-              container, run the following command:
+              Usage Percentage consistently <b>at or below 30%</b>, with an{' '}
+              <b>average usage of {value}%</b>.<p></p>Lower your CPU Limit to
+              ~40% of the current limit to enhance the performance of other
+              containerized environments, consider reducing this container's CPU
+              Limit. To reduce the CPU Limit of this container, run the
+              following command:
               <br></br>
               <br></br>
               <br></br>
               <center>
                 <TextField
-                  defaultValue='docker run -m [number of bytes][b, k, m, g suffix] [image or container ID]'
+                  defaultValue='docker run --cpus=[number of bytes here] [image or container ID here]'
                   variant='outlined'
                   size='small'
                   sx={{ width: '77%' }}
@@ -143,8 +151,8 @@ const Suggestions = ({ id }: any) => {
             </Typography>
             <Typography variant='caption'>
               <b>
-                For further information on resource constraints, please refer to
-                the Docker documentation below:
+                For further information, please refer to the Docker
+                documentation below:
               </b>
               <br></br>
               https://docs.docker.com/config/containers/resource_constraints/
@@ -155,17 +163,19 @@ const Suggestions = ({ id }: any) => {
       if (value > 30 && value <= 50) {
         setCPUSuggestion(
           <Box>
-            For the past 7 days, your CPU Usage Percent has been healthy, using
-            between 30% to 50% of your CPU, averaging at {value}%.
+            Over the past <b>7 days</b>, your CPU Usage Percent has been{' '}
+            <b>HEALTHY</b>, trending between 30% to 50% of your CPU, averaging
+            at {value}%.
           </Box>,
         );
       }
       if (value > 50 && value < 70) {
         setCPUSuggestion(
           <Box>
-            For the past 7 days, your CPU Usage Percent has been slightly higher
-            than normal, using between 50% to 70% of your CPU, averaging at{' '}
-            {value}%. CPU Usage may need to be optimized soon.
+            Over the past <b>7 days</b>, your CPU Usage Percent has been
+            slightly <b>ELEVATED</b>, trending between 50% to 70% of your CPU,{' '}
+            <b>averaging at {value}%</b>. CPU Usage may need to be optimized
+            soon.
           </Box>,
         );
       }
@@ -178,6 +188,7 @@ const Suggestions = ({ id }: any) => {
     try {
       const query = `avg_over_time(memory_usage_percent{container_id="${id}",job="docker_stats"}[7d])`;
       const res = await prom.instantQuery(query);
+
       const value = Number(res.result[0].value.value.toFixed(2));
       if (value >= 70) {
         setMEMSuggestion(
@@ -185,11 +196,12 @@ const Suggestions = ({ id }: any) => {
             <Typography className='optimizeContent'>
               This container environment's CPU utilization is <b>EXCESSIVE</b>.
               <p></p>
-              For the past <b>7 days</b>, this container maintained a Memory Usage
-              Percent consistently <b>greater than or equal to 70%</b>, with an <b>average of {value}%</b>. To optimize this container's
-              resources, consider creating a Docker Swarm. Docker Swarm offers
-              automatic scaling, desired state reconciliation, and load
-              balancing.
+              Over the past <b>7 days</b>, this container maintained a Memory
+              Usage Percent consistently <b>greater than or equal to 70%</b>,
+              with an <b>average of {value}%</b>.<p></p> To optimize this
+              container's resources, consider creating a Docker Swarm. Docker
+              Swarm offers automatic scaling, desired state reconciliation, and
+              load balancing.
               <br></br>
               <br></br>
             </Typography>
@@ -208,12 +220,11 @@ const Suggestions = ({ id }: any) => {
         setMEMSuggestion(
           <Box>
             <Typography className='optimizeContent'>
-              This container environment is running <b>EFFICIENTLY</b>.<p></p>{' '}
               Over the past <b>7 days</b>, this container has maintained a
               Memory Usage Percentage consistently <b>at or below 30%</b>, with
-              an <b>average usage of {value}%</b>. To enhance the performance of
-              other containerized environments, consider reducing this
-              container's Memory Limit. To reduce the Memory Limit of this
+              an <b>average usage of {value}%</b>.<p></p>To enhance the
+              performance of other containerized environments, consider reducing
+              this container's Memory Limit. To reduce the Memory Limit of this
               container, run the following command:
               <br></br>
               <br></br>
@@ -231,8 +242,8 @@ const Suggestions = ({ id }: any) => {
             </Typography>
             <Typography variant='caption'>
               <b>
-                For further information on resource constraints, please refer to
-                the Docker documentation below:
+                For further information, please refer to the Docker
+                documentation below:
               </b>
               <br></br>
               https://docs.docker.com/config/containers/resource_constraints/
@@ -243,17 +254,20 @@ const Suggestions = ({ id }: any) => {
       if (value > 30 && value <= 50) {
         setMEMSuggestion(
           <Box>
-            For the past 7 days, your Memory Usage Percent has been healthy,
-            using between 30% to 50% of your memory, averaging at {value}%.
+            Over the past <b>7 days</b>, your Memory Usage Percent has been{' '}
+            <b>HEALTHY</b>, using between 30% to 50% of your memory,{' '}
+            <b>averaging at {value}%</b>.
           </Box>,
         );
       }
       if (value > 50 && value < 70) {
         setMEMSuggestion(
           <Box>
-            For the past 7 days, your Memory Usage Percent has been slightly
-            higher than normal, using between 50% to 70% of your memory,
-            averaging at {value}%. Memory Usage may need to be optimized soon.
+            Over the past <b>7 days</b>, your Memory Usage Percent has been
+            slightly
+            <b>ELEVATED</b>, using between 50% to 70% of your memory,
+            <b>averaging at {value}%</b>. Memory Usage may need to be optimized
+            soon.
           </Box>,
         );
       }

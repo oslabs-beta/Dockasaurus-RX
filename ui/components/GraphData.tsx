@@ -7,6 +7,8 @@ import { useMenuState } from '../hooks/useMenuState';
 import '../../ui/css/style.css';
 
 const GrafanaData = () => {
+  let mediaQueryObj = window.matchMedia('(prefers-color-scheme: dark)');
+  let isDarkMode = mediaQueryObj.matches;
   const {
     id,
     setId,
@@ -21,15 +23,20 @@ const GrafanaData = () => {
     handleViewClick,
     handleClose,
   } = useMenuState();
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const refreshGraphs = () => {
+    (document.getElementById('iframe1') as HTMLImageElement).src = (
+      document.getElementById('iframe1') as HTMLImageElement
+    ).src;
+    (document.getElementById('iframe2') as HTMLImageElement).src = (
+      document.getElementById('iframe2') as HTMLImageElement
+    ).src;
     setTimeout(() => {
-      setLoading(false);
-    }, 5000);
+      refreshGraphs();
+    }, 60000);
+  };
+  useEffect(() => {
+    refreshGraphs();
   }, []);
-
   return (
     <>
       <Box
@@ -39,25 +46,21 @@ const GrafanaData = () => {
           justifyContent: 'space-evenly',
           height: '90%',
         }}>
-        {loading ? (
-          <Skeleton variant='rectangular' width='49%' height='100%' animation='wave'/>
-        ) : (
-          <iframe
-            className='framed'
-            id='iframe1'
-            src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=2&from=now-${view}`}
-          />
-        )}
+        <iframe
+          className='framed'
+          id='iframe1'
+          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=${
+            isDarkMode ? 'dark' : 'light'
+          }&panelId=2&from=now-${view}`}
+        />
 
-        {loading ? (
-          <Skeleton variant='rectangular' width='49%' height='100%' animation='wave'/>
-        ) : (
-          <iframe
-            className='framed'
-            id='iframe2'
-            src={`http://localhost:40001/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=1&from=now-${view}`}
-          />
-        )}
+        <iframe
+          className='framed'
+          id='iframe2'
+          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=${
+            isDarkMode ? 'dark' : 'light'
+          }&panelId=1&from=now-${view}`}
+        />
       </Box>
       <Button
         id='time-button'
