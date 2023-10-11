@@ -6,6 +6,8 @@ import { useMenuState } from '../hooks/useMenuState';
 import '../../ui/css/style.css';
 
 const GrafanaData = () => {
+  let mediaQueryObj = window.matchMedia('(prefers-color-scheme: dark)');
+  let isDarkMode = mediaQueryObj.matches;
   const {
     id,
     setId,
@@ -46,13 +48,17 @@ const GrafanaData = () => {
         <iframe
           className='framed'
           id='iframe1'
-          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=2&from=now-${view}`}
+          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=${
+            isDarkMode ? 'dark' : 'light'
+          }&panelId=2&from=now-${view}`}
         />
 
         <iframe
           className='framed'
           id='iframe2'
-          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=dark&panelId=1&from=now-${view}`}
+          src={`http://localhost:39872/d-solo/b6cb1312-2136-4c9b-b59a-e45ff2fce572/container-metrics?orgId=1&to=now&theme=${
+            isDarkMode ? 'dark' : 'light'
+          }&panelId=1&from=now-${view}`}
         />
       </Box>
       <Button
