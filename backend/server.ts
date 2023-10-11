@@ -129,8 +129,6 @@ function openStatsStream(id: String) {
   const req = http.request(options, res => {
     res.on('data', chunk => {
       let stats: DockerStats = JSON.parse('' + chunk);
-      console.log('streaming:', id);
-      console.log(stats);
       const cpu_stats = stats.cpu_stats;
       const precpu_stats = stats.precpu_stats;
       const memory_stats = stats.memory_stats;
@@ -207,12 +205,14 @@ app.post('/api/filtergraph/:id', async (req: any, res: any) => {
 });
 
 app.delete('/api/filtergraph/', async (req: any, res: any) => {
+  console.log('about to readfile');
   const dashboard: any = JSON.parse(
     fs.readFileSync('/dashboards/container-metrics/dashboard.json').toString(),
   );
   dashboard.panels.forEach((element: any) => {
     element.fieldConfig.overrides[0].matcher.options = `/^((?!).)*$/`;
   });
+  console.log('about to write file');
   fs.writeFileSync(
     '/dashboards/container-metrics/dashboard.json',
     JSON.stringify(dashboard),
@@ -226,6 +226,7 @@ app.delete('/api/filtergraph/', async (req: any, res: any) => {
       }),
     },
   );
+  console.log('backend successful');
   res.status(200).send();
 });
 

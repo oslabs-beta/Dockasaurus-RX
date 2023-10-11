@@ -3,6 +3,7 @@ import StyledMenu from './StyledMenu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, MenuItem, Divider } from '@mui/material';
 import { useMenuState } from '../hooks/useMenuState';
+import { useDockerDesktopClient } from './CardContainer';
 import '../../ui/css/style.css';
 
 const GrafanaData = () => {
@@ -22,6 +23,19 @@ const GrafanaData = () => {
     handleViewClick,
     handleClose,
   } = useMenuState();
+
+  const ddClient = useDockerDesktopClient();
+
+  const handleSelectAllClick = async () => {
+    console.log('Sending request to backend');
+    await ddClient.extension.vm?.service?.delete(`/api/filtergraph/`);
+    (document.getElementById('iframe1') as HTMLImageElement).src = (
+      document.getElementById('iframe1') as HTMLImageElement
+    ).src;
+    (document.getElementById('iframe2') as HTMLImageElement).src = (
+      document.getElementById('iframe2') as HTMLImageElement
+    ).src;
+  };
   const refreshGraphs = () => {
     (document.getElementById('iframe1') as HTMLImageElement).src = (
       document.getElementById('iframe1') as HTMLImageElement
@@ -103,6 +117,23 @@ const GrafanaData = () => {
           Last 24 hours
         </MenuItem>
       </StyledMenu>
+      <Button
+        id='time-button'
+        // aria-controls={open ? 'customized-menu' : undefined}
+        // aria-haspopup='true'
+        // aria-expanded={open ? 'true' : undefined}
+        // disableElevation
+        onClick={handleSelectAllClick}
+        variant='text'
+        sx={{
+          textTransform: 'uppercase',
+          fonSize: '0.95em',
+          borderRadius: '30px',
+          padding: '0.35rem',
+          margin: '3px',
+        }}>
+        Select All Containers
+      </Button>
     </>
   );
 };
