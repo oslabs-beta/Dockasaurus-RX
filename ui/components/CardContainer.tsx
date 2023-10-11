@@ -11,7 +11,7 @@ import '../../ui/css/style.css';
 
 const client = createDockerDesktopClient();
 
-function useDockerDesktopClient() {
+export function useDockerDesktopClient() {
   return client;
 }
 
@@ -99,50 +99,66 @@ const CardContainer = ({ setId }: any): any => {
               }}>
               Select
             </Button>
-            <Button
-              variant='text'
-              onClick={async () => {
-                try {
-                  await ddClient.extension.vm?.service?.post(
-                    `/api/${container.Id}/start`,
-                    {},
-                  );
-                  console.log('Container start request sent successfully');
-                } catch (error) {
-                  console.error('Failed to start the container:', error);
-                }
-              }}
-              sx={{
+            {[39870, 39871, 39872]
+              .map(e =>
+                container.Ports.map((p: any) => p.PublicPort).includes(e),
+              )
+              .includes(true) ? (
+              <div />
+            ) : (
+              <Button
+                variant='text'
+                onClick={async () => {
+                  try {
+                    await ddClient.extension.vm?.service?.post(
+                      `/api/${container.Id}/start`,
+                      {},
+                    );
+                    console.log('Container start request sent successfully');
+                  } catch (error) {
+                    console.error('Failed to start the container:', error);
+                  }
+                }}
+                sx={{
                 textTransform: 'uppercase',
                 fontSize: '0.94em',
                 borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
-              Run
-            </Button>
-            <Button
-              variant='text'
-              onClick={async () => {
-                try {
-                  await ddClient.extension.vm?.service?.post(
-                    `/api/${container.Id}/stop`,
-                    {},
-                  );
-                  console.log('Container stop request sent successfully');
-                } catch (error) {
-                  console.error('Failed to stop the container:', error);
-                }
-              }}
-              sx={{
+                Run
+              </Button>
+            )}
+            {[39870, 39871, 39872]
+              .map(e =>
+                container.Ports.map((p: any) => p.PublicPort).includes(e),
+              )
+              .includes(true) ? (
+              <div />
+            ) : (
+              <Button
+                variant='text'
+                onClick={async () => {
+                  try {
+                    await ddClient.extension.vm?.service?.post(
+                      `/api/${container.Id}/stop`,
+                      {},
+                    );
+                    console.log('Container stop request sent successfully');
+                  } catch (error) {
+                    console.error('Failed to stop the container:', error);
+                  }
+                }}
+                sx={{
                 textTransform: 'uppercase',
                 fontSize: '0.94em',
                 borderRadius: '35px',
                 padding: '0.35rem',
                 margin: '3px',
               }}>
-              Stop
-            </Button>
+                Stop
+              </Button>
+            )}
           </CardContent>
         </Card>
       );
