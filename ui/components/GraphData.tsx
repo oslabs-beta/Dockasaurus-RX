@@ -127,10 +127,10 @@ const GrafanaData = () => {
         variant='text'
         sx={{
           textTransform: 'uppercase',
-          fonSize: '0.95em',
-          borderRadius: '30px',
+          fontSize: '0.90em',
+          borderRadius: '35px',
           padding: '0.35rem',
-          margin: '3px',
+          margin: '5px',
         }}>
         Select All Containers
       </Button>
