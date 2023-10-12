@@ -1,11 +1,20 @@
 
 
-# Dockasaurus RX 🦖🩺
-Docker container diagnostics at your fingertips.
+# Dockasaurus RX
+Docker container diagnostics at your fingertips. 🦖
 
-<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/Dockasaurus.png" alt="Dockasaurus RX Logo" width=300 height=300></p>
+<p align="center"> <img src="./screenshots/TransparentDRX.png" alt="Dockasaurus RX" width=300 height=300></p>
 
 Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions.
+
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
 
 
 
@@ -43,18 +52,18 @@ The extension is divided into a minimal yet feature-rich 3 panel dashboard, desi
 
 - 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and Memory Usage Percent in 2 Grafana iframes.
 
-<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/GraphComponent.gif" alt="Graph Gif"></p>
+<p align="center"> <img src="./screenshots/GraphComponent.gif" alt="Graph Gif"></p>
 
 - 🗃️ The lower section of DRX's dashboard is shared by 2 panels. The left section houses interactive **Container Cards** that allow for dynamic searches, filtering, and selection where containers can be run, stopped, viewed, or pruned.
 
-<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/ContainerComponent.gif" alt="Container Gif"></p>
+<p align="center"> <img src="./screenshots/ContainerComponent.gif" alt="Container Gif"></p>
 
 - 👑 The crown jewel of DRX is **Optimization**. Recommendations are prescribed in the bottom right panel. Once a container is selected, DRX automatically assesses the health of the containerized application and suggests 3 levels of optimization displayed in the accordion along with a comparative analysis of historical data.
 
-<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/Suggestions.gif" alt="Suggestions Gif"></p>
+<p align="center"> <img src="./screenshots/Suggestions.gif" alt="Suggestions Gif"></p>
 
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -68,16 +77,8 @@ The Dockasaurus RX Docker Desktop extension is a frontend **React** application 
 -  **Prometheus** establishes a robust data pipeline for gathering and storing Docker Engine metrics, ensuring accuracy and space efficiency. DRX's Optimization Suggestions rule-based algorithms are written with data scraped by Prometheus.
 -  **Grafana** seamlessly extracts and visualizes Docker container metrics to provide the frontend with interactive charts and graphs for comprehensive container performance monitoring.
 
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
-![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -92,7 +93,7 @@ To install Dockasaurus RX enter the following command:
 
 
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -111,7 +112,7 @@ To install Dockasaurus RX enter the following command:
     - [ ] Chinese
     - [ ] Spanish
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -128,7 +129,7 @@ Contributions can also be made by simply **Forking** DRX. From your fork:
 3. Push to the Branch (git push origin feature/Idea)
 4. Open a Pull Request to be reviewed
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -140,7 +141,7 @@ Contributions can also be made by simply **Forking** DRX. From your fork:
 - **Email:** [dockasaurusrx@gmail.com](mailto:dockasaurusrx@gmail.com)
 - **GitHub:** [https://github.com/oslabs-beta/Dockasaurus-RX](https://github.com/oslabs-beta/Dockasaurus-RX)
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
 
 
 
@@ -186,4 +187,4 @@ Contributions can also be made by simply **Forking** DRX. From your fork:
   </tr>
 </table>
 
-[Return to top](#dockasaurus-rx-🦖🩺)
+[Return to top](#dockasaurus-rx)
