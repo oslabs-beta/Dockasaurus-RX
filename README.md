@@ -3,7 +3,7 @@
 # Dockasaurus RX 🦖
 Docker container diagnostics at your fingertips.
 
-        https://github.com/oslabs-beta/Dockasaurus-RX/blob/dev/screenshots/Dockasaurus.png
+        <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/Dockasaurus.png" alt="Dockasaurus RX Logo">
 
 Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions.
 
