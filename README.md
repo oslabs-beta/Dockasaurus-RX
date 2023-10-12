@@ -87,7 +87,7 @@ The Dockasaurus RX Docker Desktop extension is a frontend **React** application 
 
 ## Installation
 
-To install Dockasaurus RX enter the following command:
+To install Dockasaurus RX, please be sure Docker Desktop is installed and running before entering the following command:
 
         docker extension install dockasaurusrx/dockasaurusrx1.0.0
 
