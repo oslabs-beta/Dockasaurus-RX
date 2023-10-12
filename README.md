@@ -45,7 +45,7 @@ The extension is divided into a minimal yet feature-rich 3 panel dashboard, desi
 
 - 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and Memory Usage Percent in 2 Grafana iframes.
 
-<img src="
+<img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/GraphComponent.gif alt="Graph Gif">
 
 - 🗃️ The lower section of DRX's dashboard is shared by 2 panels. The left section houses interactive **Container Cards** that allow for dynamic searches, filtering, and selection where containers can be run, stopped, viewed, or pruned.
 
