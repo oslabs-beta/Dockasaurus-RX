@@ -72,7 +72,7 @@ The extension is divided into a minimal yet feature-rich 3 panel dashboard, desi
 
 ## Under the hood
 
-The Dockasaurus RX Docker Desktop extension is a frontend **React** application built with the MUI Component Library and leverages the following additonal technologies to benefit users:
+The Dockasaurus RX Docker Desktop extension is a frontend **React** application built with the MUI Component Library and leverages the following additional technologies to benefit users:
 
 -  **Prometheus** establishes a robust data pipeline for gathering and storing Docker Engine metrics, ensuring accuracy and space efficiency. DRX's Optimization Suggestions rule-based algorithms are written with data scraped by Prometheus.
 -  **Grafana** seamlessly extracts and visualizes Docker container metrics to provide the frontend with interactive charts and graphs for comprehensive container performance monitoring.
