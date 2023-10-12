@@ -3,7 +3,7 @@
 # Dockasaurus RX 🦖🩺
 Docker container diagnostics at your fingertips.
 
-        **INSERT Dockasaurus RX LOGO HERE**
+<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/dev/screenshots/Dockasaurus.png" alt="Dockasaurus RX Logo" width=300 height=300></p>
 
 Dockasaurus RX diagnoses resource consumption and prescribes optimization to empower users to make informed resource allocation decisions.
 
@@ -39,21 +39,19 @@ A nimble and easy-to-use DevOps container tool, Dockasaurus RX has a major trick
 
 ## Core Features
 
-        **INSERT MAIN DEMO GIF HERE**
-
 The extension is divided into a minimal yet feature-rich 3 panel dashboard, designed to be uncluttered, collapsible, and viewport adaptive to your DevOps needs.
 
 - 📉 **Chart Visualizations** sit atop the dashboard displaying current CPU utilization and Memory Usage Percent in 2 Grafana iframes.
 
-        **INSERT VISUALIZATION DEMO GIF HERE**
+<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/GraphComponent.gif" alt="Graph Gif"></p>
 
 - 🗃️ The lower section of DRX's dashboard is shared by 2 panels. The left section houses interactive **Container Cards** that allow for dynamic searches, filtering, and selection where containers can be run, stopped, viewed, or pruned.
 
-        **INSERT SEARCH AND FILTERING DEMO GIF HERE**
+<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/ContainerComponent.gif" alt="Container Gif"></p>
 
 - 👑 The crown jewel of DRX is **Optimization**. Recommendations are prescribed in the bottom right panel. Once a container is selected, DRX automatically assesses the health of the containerized application and suggests 3 levels of optimization displayed in the accordion along with a comparative analysis of historical data.
 
-        **INSERT ACCORDION DEMO GIF HERE**
+<p align="center"> <img src="https://raw.githubusercontent.com/oslabs-beta/Dockasaurus-RX/bc/screenshots/Suggestions.gif" alt="Suggestions Gif"></p>
 
 
 [Return to top](#dockasaurus-rx-🦖🩺)
